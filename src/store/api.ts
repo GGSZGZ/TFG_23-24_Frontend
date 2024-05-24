@@ -229,7 +229,8 @@ export const useApiStore = defineStore('flashgaminghub', {
         if (!response.ok) {
           throw new Error('Error al obtener los datos')
         }
-        return await response.json()
+        const studioData = await response.json();
+        localStorage.setItem("studioGame", JSON.stringify(studioData));
       } catch (error: any) {
         console.error('Error al obtener los datos:', error.message)
         throw error
@@ -802,7 +803,8 @@ export const useApiStore = defineStore('flashgaminghub', {
         if (!response.ok) {
           throw new Error('Error al obtener los datos')
         }
-        return await response.json()
+        const gameData = await response.json();
+        localStorage.setItem("currentGame", JSON.stringify(gameData));
       } catch (error: any) {
         console.error('Error al obtener los datos:', error.message)
         throw error

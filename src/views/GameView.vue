@@ -8,6 +8,7 @@ import GameComments from '@/components/GameComments.vue'
 </script>
 
 <template>
+  <div class="backgroudCol"></div>
     <GameItem />
     <hr class="line" />
     <div class="table">
@@ -18,12 +19,13 @@ import GameComments from '@/components/GameComments.vue'
         <GameCategories class="game-categories" />
     </div>
     <div class="secondary-content">
+      <GameComments />
         <SimilarGames />
-        <GameComments />
     </div>
 </template>
 
 <style scoped>
+
 hr {
     width: 80%;
     border-color: #000;
@@ -60,6 +62,8 @@ hr {
 
 .buy-item{
     padding: 0px;
+    position: relative;
+    margin-bottom: -400px;
 }
 
 .game-categories {

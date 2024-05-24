@@ -1,9 +1,27 @@
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useApiStore, pinia } from '../store/api';
+
+const router = useRouter();
+const game = ref(null);
+
+onMounted(async () => {
+  const gameString = localStorage.getItem('currentGame');
+  game.value = JSON.parse(gameString!);  
+});
+
+
+
+
+</script>
+
 <template>
-    <div class="description">
+    <div class="description" v-if="game!=null">
       <h2>About This Game</h2>
       <hr class="line" />
       <p>
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+        {{ game.description }}
       </p>
     </div>
   </template>
