@@ -6,13 +6,19 @@ import { useApiStore, pinia } from '../store/api';
 const router = useRouter();
 const game = ref(null);
 const studioName = ref('');
+const currentSlide = ref(0);  // Controlador del carrusel
+const images = ref([
+  '/src/assets/ForzaHorizon5_mainImage.jpg',
+  '/src/assets/ForzaHorizon5_secondImage.jpg',
+  '/src/assets/ForzaHorizon5_thirdImage.jpg',
+  '/src/assets/ForzaHorizon5_forthImage.jpg',
+]);
 
 onMounted(async () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   const gameId = Number(router.currentRoute.value.params.id);
   const gameData = await useApiStore(pinia).fetchGame(gameId);
   game.value = gameData!;
-  const gameString = localStorage.getItem('currentGame');
-  game.value = JSON.parse(gameString!);
   await useApiStore(pinia).fetchStudio(game.value!.studioID);
   studioName.value = await obtainStudio();
 });
@@ -32,23 +38,27 @@ async function obtainStudio() {
 }
 
 const categories = (category: string) => {
-  return category.split(','); 
+  return category.split(',');
+}
+
+function changeSlide(index: number) {
+  currentSlide.value = index;
 }
 </script>
-
 
 <template>
   <div class="page" v-if="game">
     <div class="container-images">
-      <!-- Imagen principal -->
-      <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="main-image">
+      <!-- Componente de Carrusel con clase personalizada  -->
+      <v-carousel v-model="currentSlide" hide-delimiters  show-arrows="hover" cycle class="custom-carousel">
+        <v-carousel-item v-for="(src, i) in images" :key="i">
+          <v-img :src="src" class="main-image" contain></v-img>
+        </v-carousel-item>
+      </v-carousel>
       <!-- Contenedor de miniaturas -->
       <div class="thumbnail-container">
         <!-- Iteración sobre las miniaturas -->
-        <img src="/src/assets/ForzaHorizon5_secondImage.jpg" class="thumbnail">
-        <img src="/src/assets/ForzaHorizon5_thirdImage.jpg" class="thumbnail">
-        <img src="/src/assets/ForzaHorizon5_forthImage.jpg" class="thumbnail">
-        <!-- Aquí podrías incluir más miniaturas si fuera necesario -->
+        <img v-for="(src, index) in images" :key="index" :src="src" class="thumbnail" @click="changeSlide(index)">
       </div>
     </div>
     <div class="side-container">
@@ -56,26 +66,30 @@ const categories = (category: string) => {
       <img src="/src/assets/ForzaHorizon5_gameImage.jpg" class="side-image">
       <div class="side-text">
         <p>{{ game.synopsis }}</p>
-        <p class="release-date"><strong>FECHA DE LANZAMIENTO:&nbsp;</strong> {{ formattedReleaseDate }}</p>
+        <p class="release-date"><strong>DATE PUBLISHED:&nbsp;</strong> {{ formattedReleaseDate }}</p>
         <br>
-        <strong>ESTUDIO:&nbsp;</strong> <span>{{ studioName }}</span>
+        <strong>STUDIO:&nbsp;</strong> <span>{{ studioName }}</span>
         <br>
         <div class="categories">
-          <strong>CATEGORÍAS:&nbsp;</strong>
+          <strong>CATEGORIES:&nbsp;</strong>
           <span v-for="(category) in categories(game.categories)" :key="category" class="category">{{ category }}</span>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
+
+
+
 <style scoped>
-strong{
+
+strong {
   font-family: var(--font-orbitron) sans-serif;
   font-weight: 200;
   right: 3%;
 }
+
 .page {
   display: flex;
   justify-content: center;
@@ -95,16 +109,18 @@ strong{
 .main-image {
   width: 800px;
   height: 400px;
-  background-color: #cccccc;
-  margin-bottom: 20px;
-  border-radius: 20px;
+  margin-bottom: 0px;
+  object-fit: fill;
 }
 
 .thumbnail-container {
   display: flex;
   justify-content: space-evenly;
-  margin-top: 20px;
+  margin-top: -60px;
   width: 800px;
+  border-radius: 100px;
+  position: relative;
+  z-index: 1;
 }
 
 .thumbnail {
@@ -112,6 +128,9 @@ strong{
   height: 120px;
   background-color: #cccccc;
   border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
 }
 
 .side-container {
@@ -143,9 +162,10 @@ strong{
 .categories {
   margin-top: 10px;
 }
-.categories{
+
+.categories {
   position: relative;
-  margin-top: 100px;
+  margin-top: 10px;
 }
 
 .categories {
@@ -157,7 +177,7 @@ strong{
 .category {
   position: relative;
   bottom: 8px;
-  background-color: var( --color-black);
+  background-color: var(--color-black);
   color: var(--neutral-colors-white);
   padding: 2px 5px;
   box-shadow: 3px 3px 4px 0 var(--color-blue);
@@ -166,13 +186,11 @@ strong{
   text-transform: uppercase;
 }
 
-/* margin-right: 10px;
-  top: 5%;
-  position: relative;
-  left: -15px;
-  background-color: var(--color-dark-blue);
-  color: var(--neutral-colors-white);
-  padding: 0px 5px;
-  box-shadow: 3px 3px 4px 0 var(--color-blue); */
+  ::v-deep .v-btn--variant-elevated {
+    background: transparent;
+    color: var(--neutral-colors-white);
+}
 
 </style>
+
+

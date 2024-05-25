@@ -50,8 +50,9 @@ export const useApiStore = defineStore('flashgaminghub', {
 
         const data = await response.text()
         const token = data
+        localStorage.setItem('jwtToken', token);
+        return token;
 
-        return token
       } catch (error) {
         console.error('Error al enviar los datos:', error)
         return null
@@ -106,8 +107,8 @@ export const useApiStore = defineStore('flashgaminghub', {
         }
         return await response.json()
       } catch (error: any) {
-        console.error('Error al obtener los datos:', error.message)
-        throw error
+        // console.error('Error al obtener los datos:', error.message)
+        // throw error
       }
     },
     async fetchMessagesUser(id: number) {
@@ -123,8 +124,12 @@ export const useApiStore = defineStore('flashgaminghub', {
             Authorization: `Bearer ${this.token}`
           }
         })
+        if (response.status === 404) {
+          console.log('No se han encontrado mensajes de este usuario');
+          return [];
+        }
         if (!response.ok) {
-          throw new Error('Error al obtener los datos')
+          return 'No se han encontrado mensajes de este usuario'
         }
         return await response.json()
       } catch (error: any) {
@@ -156,7 +161,7 @@ export const useApiStore = defineStore('flashgaminghub', {
       }
     },
     async fetchUpdateUser(id: number, userData: any) {
-      
+      const tokenUpdated=localStorage.getItem('jwtToken');
       try {
         if (!this.token) {
           console.error('No se encontró ningún token JWT en el localStorage');
@@ -170,7 +175,7 @@ export const useApiStore = defineStore('flashgaminghub', {
         const response = await fetch(`https://localhost:7025/User/${id}`, {
           method: 'PUT',
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            Authorization: `Bearer ${tokenUpdated}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(formattedUserData)
@@ -181,6 +186,8 @@ export const useApiStore = defineStore('flashgaminghub', {
           
         }
         const responseBody = await response.text();
+        
+        
         if (!responseBody) {
           return null;
         }
@@ -803,8 +810,9 @@ export const useApiStore = defineStore('flashgaminghub', {
         if (!response.ok) {
           throw new Error('Error al obtener los datos')
         }
-        const gameData = await response.json();
-        localStorage.setItem("currentGame", JSON.stringify(gameData));
+        // const gameData = await response.json();
+        // localStorage.setItem("currentGame", JSON.stringify(gameData));
+        return await response.json();
       } catch (error: any) {
         console.error('Error al obtener los datos:', error.message)
         throw error

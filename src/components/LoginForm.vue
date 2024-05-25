@@ -8,9 +8,10 @@
   //Home
   const router = useRouter();
   const navigateToHome = async() => {
-    if(existingUser.value==true){
-        router.push({ name: 'home' });
-    }
+      router.push({ name: 'store' });
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
   };
 
   async function loginUserToken(values : any){
@@ -22,11 +23,12 @@
       const token=await useApiStore(pinia).fetchPostLoginUser(userDTO);
       if(token){
         localStorage.setItem('jwtToken', token);
+        localStorage.setItem('messageLiked','');
         handleReset();
         alert('El usuario se ha logeado correctamente');
         navigateToHome();
       }else{
-        alert('Este usuario no se ha registrado');
+        alert('El correo o la contraseña son inválidos');
       }
     } catch (error) {
     console.error('Error during login');
@@ -63,25 +65,17 @@
 
   const submit = handleSubmit(values => {
     existingUser.value=false;
-    fetchGetUser(values);
+    loginUserToken(values);
     
   })
 
-  const fetchGetUser = async (values:any) => {
-    try {
-     const users= await useApiStore(pinia).fetchUsers();
-     localStorage.setItem('users',JSON.stringify(users));
-     loginUserToken(values);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const logOut = () =>{
-    if(localStorage.getItem('user')!=JSON.stringify(null)){
+    if(localStorage.getItem('jwtToken')!=JSON.stringify(null)){
       localStorage.setItem('user', JSON.stringify(null));
       localStorage.setItem('jwtToken', JSON.stringify(null));
+      localStorage.setItem('messageLiked','');
       alert('Se ha cerrado sesión');
+      navigateToHome();
     }else{
       alert('Todavía no se ha logueado');
     }

@@ -4,25 +4,23 @@ import { computed, ref, watch } from 'vue';
 import { useApiStore, pinia } from '../store/api';
 import { jwtDecode } from 'jwt-decode';
 import { RouterLink } from 'vue-router';
+import { useRouter } from 'vue-router';
 
-const existingUser = ref(false);
+function proveExistingUser(values: any) {
 
-function proveExistingUser(users: any, values: any) {
-  
-  users.forEach((element: any) => {
-    if (element.email === values.email) {
-      existingUser.value = true;
-    }
-  });
-
-  if (!existingUser.value) {
     fetchPostUser(values);
     handleReset();
     handleDateReset();
-  } else {
-    alert('Este usuario ya se ha registrado');
-  }
 }
+
+  //Home
+  const router = useRouter();
+  const navigateToHome = async() => {
+      router.push({ name: 'store' });
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
+  };
 
 
 
@@ -49,24 +47,26 @@ const fetchPostUser = async (values: any) => {
     };
     
     const token=await useApiStore(pinia).fetchPostRegisterUser(userDTO);
-    if(token){
-    localStorage.setItem('jwtToken', token);
+    
+    if (token==='User already exists') {
+      alert(token)
+    }else{
+      localStorage.setItem('jwtToken', token!);
+      localStorage.setItem('messageLiked','');
+      await postUpdateTables();
+      alert('El usuario se ha registrado correctamente');
+      navigateToHome();
     }
-    await postUpdateTables();
   } catch (err) {
     console.error(err);
   }
 };
   const postUpdateTables = async()=>{
     const token=localStorage.getItem('jwtToken');
-  if (!token) {
-    console.error('No se encontró un token JWT en el almacenamiento local.')
-    return
-  }
+    
 
   // Decodificar el token JWT
   const decodedToken = jwtDecode(token) as { id: number };
-  
     postLibraryCommunity(decodedToken.id);
     updateUserIds(decodedToken.id);
 }
@@ -76,25 +76,16 @@ function postLibraryCommunity(userId : any){
       userID : userId
     };
     useApiStore(pinia).fetchPostLibraryGameUser(libraryUserDTO);
-  const communityUserDTO={
-    message : "Start",
-    userID : userId
-  }
-    useApiStore(pinia).fetchPostCommunity(communityUserDTO);
-
 }
 function updateUserIds(userId : any){
   const objectIds = {
-    libraryGameUserID : userId,
-    messageID : userId
+    libraryGameUserID : userId
   }
-  useApiStore(pinia).fetchUpdateUser(userId++,objectIds);
+  useApiStore(pinia).fetchUpdateUser(userId,objectIds);
 }
 const fetchGetUser = async (values: any) => {
   try {
-    const users = await useApiStore(pinia).fetchUsers();
-    localStorage.setItem('users',JSON.stringify(users));
-    proveExistingUser(users, values);
+    proveExistingUser(values);
   } catch (err) {
     console.error(err);
 }
@@ -186,7 +177,6 @@ const age = ref<number | null>(null);
 
 const submit = handleSubmit((values) => {
   if (birthDate.value) {
-    existingUser.value = false;
     formattedDate.value = formatDate(birthDate.value);
     age.value = calcAge(birthDate.value);
     values.age = age.value;

@@ -12,14 +12,10 @@ onMounted(async () => {
   await loadGame(route.params.id);
 });
 
-watch(() => route.params.id, async (newId) => {
-  await loadGame(newId);
-});
 
-async function loadGame(gameID) {
-  // Simula la carga del juego actual desde el localStorage
-  const gameString = localStorage.getItem('currentGame');
-  game.value = JSON.parse(gameString!);
+async function loadGame(gameID : any) {
+  const gameData = await useApiStore(pinia).fetchGame(gameID);
+  game.value = gameData!;
 
   const filteredGames = await searchSimilarGames(game.value.categories);
   gamesFiltered.value = filteredGames;
@@ -44,9 +40,18 @@ const calculateDiscountedPrice = (price, discount) => {
 };
 
 const navigateToGame = (gameID: any) => {
-  console.log(gameID);
-  router.push({ name: 'game', params: { id: gameID } });
+
+  // Navegar al nuevo juego
+    router.replace({ name: 'game', params: { id: gameID } });
+  // Recargar la página después de un pequeño retraso
+  setTimeout(() => {
+    window.location.reload();
+  }, 0);
+
+  
 };
+
+
 </script>
 
 

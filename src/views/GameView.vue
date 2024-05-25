@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import GameItem from '@/components/GameItem.vue'
 import BuyItem from '@/components/BuyItem.vue'
-import GameCategories from '@/components/GameCategories.vue'
 import DescriptionItem from '@/components/DescriptionItem.vue'
 import SimilarGames from '@/components/SimilarGames.vue'
 import GameComments from '@/components/GameComments.vue'
@@ -16,10 +15,9 @@ import GameComments from '@/components/GameComments.vue'
             <BuyItem class="buy-item" />
             <DescriptionItem class="description-item" />
         </div>
-        <GameCategories class="game-categories" />
+        <GameComments class="game-comments"/>
     </div>
     <div class="secondary-content">
-      <GameComments />
         <SimilarGames />
     </div>
 </template>
@@ -59,14 +57,19 @@ hr {
   flex: 1;
   margin-bottom: 20px;
 }
+.description-item{
+  margin-top: 100px;
+  margin-bottom: 0px;
+}
 
 .buy-item{
     padding: 0px;
     position: relative;
-    margin-bottom: -400px;
+    margin-bottom: -100px;
 }
 
-.game-categories {
+.game-comments {
   padding: 20px;
+  margin-top: -30px;
 }
 </style>

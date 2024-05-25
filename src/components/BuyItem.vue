@@ -7,11 +7,9 @@ const router = useRouter();
 const game = ref(null);
 
 onMounted(async () => {
-  // const gameId = Number(router.currentRoute.value.params.id);
-  // const gameData = await useApiStore(pinia).fetchGame(gameId);
-  // game.value = gameData!;
-  const gameString = localStorage.getItem('currentGame');
-  game.value = JSON.parse(gameString!);
+  const gameId = Number(router.currentRoute.value.params.id);
+  const gameData = await useApiStore(pinia).fetchGame(gameId);
+  game.value = gameData!;
   
 });
 
