@@ -1,10 +1,36 @@
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useApiStore, pinia } from '../store/api';
+
+const router = useRouter();
+const game = ref(null);
+
+onMounted(async () => {
+  const gameId = Number(router.currentRoute.value.params.id);
+  const gameData = await useApiStore(pinia).fetchGame(gameId);
+  game.value = gameData!;
+  
+});
+
+
+const calculateDiscountedPrice = (price, discount) => {
+  return (price - (price * (discount / 100))).toFixed(2);
+};
+
+
+
+
+</script>
+
+
 <template>
-    <div class="buy-section">
+    <div class="buy-section" v-if="game!=null">
       <div class="buy-container">
-        <h1>Buy Forza Horizon 5</h1>
+        <h1>Buy:&nbsp; {{ game.name }}</h1>
       </div>
         <div class="purchase-info">
-          <div class="price">40€</div>
+          <div class="price">{{calculateDiscountedPrice(game.price, game.discount)}}€</div>
           <button class="cart">Add To Cart</button>
         </div>
       
@@ -13,6 +39,7 @@
   
   <style scoped>
   .buy-section {
+    /* background-color: #002d2d; */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
