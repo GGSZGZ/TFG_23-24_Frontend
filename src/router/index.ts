@@ -28,11 +28,6 @@ const router = createRouter({
       name: 'game',
       component: GameView
     },
-    {
-      path: '/cart',
-      name: 'cart',
-      component: PaymentView
-    },
   ]
 })
 export default router
