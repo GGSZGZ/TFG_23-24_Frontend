@@ -33,7 +33,7 @@ export const useApiStore = defineStore('flashgaminghub', {
         return null
       }
     },
-    async fetchPostRegisterUser(user: any) {
+    async fetchPostRegisterUser(user: any,admin=false) {
       try {
         const response = await fetch('https://localhost:7025/Auth/Register', {
           method: 'POST',
@@ -50,7 +50,9 @@ export const useApiStore = defineStore('flashgaminghub', {
 
         const data = await response.text()
         const token = data
+        if(admin==false){
         localStorage.setItem('jwtToken', token);
+        }
         return token;
 
       } catch (error) {

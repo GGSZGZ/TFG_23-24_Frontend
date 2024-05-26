@@ -1,31 +1,122 @@
+<script setup lang="ts">
+import { ref, reactive, onMounted } from 'vue';
+import { useApiStore, pinia } from '../store/api';
+import {jwtDecode} from 'jwt-decode';
+
+let userID: number;
+const userData = ref(null);
+const isEditing = ref(false);
+const editedData = reactive({
+  surname: '',
+  name: '',
+  email: '',
+  password: ''
+});
+const errorMessage = ref('');
+
+onMounted(async () => {
+  const token = localStorage.getItem('jwtToken');
+  if (token && token !== 'null') {
+    const decodedToken = jwtDecode(token) as { id: number };
+    const apiStore = useApiStore(pinia);
+    userID=decodedToken.id;
+    userData.value = await apiStore.fetchUser(decodedToken.id);
+    if (userData.value) {
+      editedData.surname = userData.value.surname;
+      editedData.name = userData.value.name;
+      editedData.email = userData.value.email;
+      editedData.password = userData.value.password;
+    }
+  }
+});
+
+const enableEditing = () => {
+  isEditing.value = true;
+};
+
+const saveChanges = async () => {
+  // Validación de campos vacíos
+  if (!editedData.surname.trim() || !editedData.name.trim() || !editedData.password.trim()) {
+    errorMessage.value = 'Todos los campos deben estar llenos.';
+    return;
+  }
+
+  // Validación del correo electrónico
+  if (!editedData.email.endsWith('@gmail.com') || editedData.email.split('@')[0].trim() === '') {
+    editedData.email = `${editedData.name.toLowerCase()}@gmail.com`;
+  }
+
+  const apiStore = useApiStore(pinia);
+
+  // Crear un objeto plano con los datos editados
+  const userPayload = {
+    surname: editedData.surname,
+    name: editedData.name,
+    email: editedData.email,
+    password: editedData.password
+  };
+
+  await apiStore.fetchUpdateUser(Number(userID), userPayload);
+  userData.value = { ...editedData };
+  isEditing.value = false;
+  errorMessage.value = '';
+};
+</script>
+
 <template>
-    <div class="card">
-        <img src="/src/assets/cyber_site.jpg" alt="Descripción de la imagen" class="card-image">
-        <div class="card-content">
-            <div class="card-column">
-                <div class="card-username">
-                    <p class="username-title">Username</p>
-                    <h2 class="username-subtitle">HelloKitty2000</h2>
-                </div>
-                <div class="card-name">
-                    <p class="name-title">Name</p>
-                    <h2 class="name-subtitle">Gustavo Hernandez</h2>
-                </div>
-            </div>
-            <div class="card-column">
-                <div class="card-email">
-                    <p class="email-title">Email</p>
-                    <h2 class="email-subtitle">gustavo2000@gmail.com</h2>
-                </div>
-                <div class="card-phone">
-                    <p class="phone-title">Password</p>
-                    <h2 class="phone-subtitle">Contraseña</h2>
-                </div>
-            </div>
+  <div class="card" v-if="userData">
+    <img src="/src/assets/cyber_site.jpg" alt="Descripción de la imagen" class="card-image">
+    <div class="card-content">
+      <div class="card-column">
+        <div class="card-username">
+          <p class="username-title">Username</p>
+          <template v-if="isEditing">
+            <input v-model="editedData.surname" class="editable-input" />
+          </template>
+          <template v-else>
+            <h2 class="username-subtitle">{{ userData.surname }}</h2>
+          </template>
         </div>
-        <button class="card-button">Cambiar Datos</button>
+        <div class="card-name">
+          <p class="name-title">Name</p>
+          <template v-if="isEditing">
+            <input v-model="editedData.name" class="editable-input" />
+          </template>
+          <template v-else>
+            <h2 class="name-subtitle">{{ userData.name }}</h2>
+          </template>
+        </div>
+      </div>
+      <div class="card-column">
+        <div class="card-email">
+          <p class="email-title">Email</p>
+          <template v-if="isEditing">
+            <input v-model="editedData.email" class="editable-input" />
+          </template>
+          <template v-else>
+            <h2 class="email-subtitle">{{ userData.email }}</h2>
+          </template>
+        </div>
+        <div class="card-phone">
+          <p class="phone-title">Password</p>
+          <template v-if="isEditing">
+            <input v-model="editedData.password" type="password" class="editable-input" />
+          </template>
+          <template v-else>
+            <h2 class="phone-subtitle">{{ userData.password }}</h2>
+          </template>
+        </div>
+      </div>
     </div>
+    <template v-if="isEditing">
+      <button class="card-button" @click="saveChanges">Confirmar</button>
+    </template>
+    <template v-else>
+      <button class="card-button" @click="enableEditing">Edit Profile</button>
+    </template>
+  </div>
 </template>
+
 <style scoped>
 .card {
     position: relative;
@@ -51,7 +142,7 @@
 .card-content {
     display: flex;
     flex-direction: row; /* Coloca los elementos en una fila */
-    justify-content: space-between; /* Distribuye espacio equitativamente */
+    justify-content: space-between;
     padding: 20px;
     flex-grow: 1; /* Permite que el contenedor crezca para ocupar el espacio disponible */
 }
@@ -60,7 +151,7 @@
     display: flex;
     flex-direction: column; /* Coloca los elementos en una columna */
     justify-content: space-between;
-    margin-right: 20px; /* Añade espacio entre las dos columnas */
+    margin-right: 20px;
 }
 
 .username-title,
@@ -82,16 +173,31 @@
 }
 
 .card-button {
-    position: absolute; /* Posiciona el botón absolutamente */
-    bottom: 20px; /* Ajusta la distancia desde la parte inferior */
-    right: 20px; /* Ajusta la distancia desde la derecha */
-    background-color: var(--color-black); /* Ajusta el color del botón según tu preferencia */
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--color-black);
     color: var(--neutral-colors-white); /* Ajusta el color del texto del botón según tu preferencia */
     border: none;
-    padding: 10px 20px; /* Ajusta según tu preferencia */
-    border-radius: 5px; /* Ajusta según tu preferencia */
+    padding: 10px 20px;
+    border-radius: 5px;
     cursor: pointer;
     outline: none;
     font-family: var(--font-roboto);
+}
+.card-button:hover {
+    color: var(--color-blue);
+}
+
+.editable-input {
+  color: white; /* Cambia el color del texto a blanco */
+  background-color: transparent; /* Asegúrate de que el fondo sea transparente o el color que desees */
+  border: none; /* Quitar bordes si es necesario */
+  border-bottom: 1px solid white; /* Puedes añadir un borde inferior si lo deseas */
+  padding: 4px;
+  font-size: var(--text-single-100-regular-size);
+}
+.editable-input:focus {
+  outline: none; /* Quitar outline al enfocar */
 }
 </style>

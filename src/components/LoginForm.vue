@@ -96,7 +96,7 @@
         <v-text-field
           v-model="passwd.value.value"
           :error-messages="passwd.errorMessage.value"
-          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+          :append-inner-icon="visible ? 'password' : 'mdi-eye'"
           :type="visible ? 'text' : 'password'"
           label="Contraseña"
           placeholder="Pon tu contraseña"
