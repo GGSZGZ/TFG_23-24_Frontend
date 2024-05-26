@@ -34,7 +34,7 @@
     width: 80%;
     height: 250px;
     left: 10%;
-    margin-top: 10%;
+    margin-top: 40px;
     background: linear-gradient(to right, var(--color-black), var(--color-dark-blue), var(--color-blue));
     border-radius: 20px;
     overflow: hidden; /* Oculta el botón si se desborda de la tarjeta */
