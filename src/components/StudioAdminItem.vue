@@ -1,93 +1,71 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { VDateInput } from 'vuetify/labs/VDateInput';
+import { ref,onMounted } from 'vue';
 import { VNumberInput } from 'vuetify/labs/VNumberInput'
+import { useApiStore, pinia } from '../store/api';
 
 const nuevoJuego = ref({
-    title: '',
-    descriptionPlay: '',
+    name: '',
+    description: '',
     synopsis: '',
-    director: '',
+    price: '',
+    discount: '',
     genre: '',
-    role: []
+    categories: []
 });
-
-const categories = ref(["Acción",
-        "Aventura",
-        "Casual",
-        "Indie",
-        "Rol (RPG)",
-        "Simulación",
-        "Deportes",
-        "Estrategia",
-        "Multijugador masivo (MMO)",
-        "Carreras",
-        "Violento",
-        "Sangriento",
-        "Gratis para jugar",
-        "Realidad virtual (VR)",
-        "Acceso anticipado",
-        "Anime",
-        "Juegos de mesa",
-        "Dibujos animados",
-        "Exploración",
-        "Conducción",
-        "Construcción de ciudades",
-        "Cooperativo",
-        "Terror",
-        "Metroidvania",
-        "Narrativa",
-        "Puzle",
-        "Mundo abierto",
-        "Física",
-        "Plataformas",
-        "Sigilo",
-        "Supervivencia",
-        "Táctico",
-        "Terror psicológico",
-        "Aventura gráfica",
-        "Pixel art",
-        "Retro",
-        "Roguelike",
-        "Rompecabezas",
-        "Arcade",
-        "Pelea",
-        "Shoot 'em up",
-        "Ciencia ficción",
-        "Fantasía",
-        "Misterio",
-        "Novela visual",
-        "Música",
-        "Educativo",
-        "Documental",
-        "Cine interactivo",
-        "Contenido para adultos",
-        "Exploración espacial",
-        "Juegos de mesa y cartas",
-        "Narrativa interactiva",
-        "Estilo de vida",
-        "Software",
-        "Utilidades"])
-
-
-function addGame() {
-    const { title, descriptionPlay, synopsis, director, genre, role } = nuevoJuego.value;
-
-    if (!title || !descriptionPlay || !synopsis || !director || !genre || !role) {
-        alert('Faltan campos por completar');
-    } else {
-        // Aquí va la lógica para añadir el juego
-        // juegos.value.push({
-        //   title,
-        //   descriptionPlay,
-        //   synopsis,
-        //   director,
-        //   genre,
-        //   role
-        // });
-        // fetchPostGames(JSON.stringify(juegos.value[0]));
+const categories = ref([]); // Inicializar ref para las categorías
+// Función para cargar las categorías desde un archivo JSON
+async function loadCategories() {
+    try {
+        const response = await fetch('/src/assets/gameCategories.json');
+        if (!response.ok) {
+            throw new Error('Error al cargar las categorías: ' + response.statusText);
+        }
+        const data = await response.json();
+        categories.value = data;
+    } catch (error) {
+        console.error(error);
     }
 }
+
+loadCategories();
+
+
+async function addGame() {
+    let { name, description, synopsis, price, categories } = nuevoJuego.value;
+    let discount: number = 0; // Inicializar discount como número y establecerlo en 0
+    
+    // Verificar si se proporciona un valor válido para discount
+    if (nuevoJuego.value.discount !== undefined && nuevoJuego.value.discount !== null && nuevoJuego.value.discount !== '') {
+        discount = parseFloat(nuevoJuego.value.discount); // Convertir el valor a número
+    }
+    
+    if (!name || !description || !synopsis || !price || !categories) {
+        alert('Faltan campos por completar');
+    } else {
+        const categoriesString = nuevoJuego.value.categories.join(', ');
+        // CAMBIAR EL ID DEL ESTUDIO
+        const gameData = {
+            name,
+            description,
+            synopsis,
+            categories: categoriesString,
+            releaseDate: new Date().toISOString(),
+            price,
+            discount,
+            studioID : '1'
+        };
+        await useApiStore(pinia).fetchPostGame(gameData);
+        cleanFields();
+    }
+}
+function cleanFields(){
+    alert('Game has been added correctly.')
+    window.scrollTo(0, 0);
+    window.location.reload();
+
+}
+
+
 
 const nameRules = ref([
     (value: string) => !!value || 'El campo no puede estar vacío',
@@ -100,7 +78,7 @@ const nameRules = ref([
             <v-row>
                 <v-col cols="12" md="4">
                     <v-text-field clearable
-                        v-model="nuevoJuego.title"
+                        v-model="nuevoJuego.name"
                         :rules="nameRules"
                         label="Name"
                         placeholder="Elden Ring"
@@ -111,7 +89,7 @@ const nameRules = ref([
 
                 <v-col cols="12" md="4">
                     <v-textarea clearable
-                        v-model="nuevoJuego.descriptionPlay"
+                        v-model="nuevoJuego.description"
                         :rules="nameRules"
                         label="Description"
                         placeholder="Un juego que te hará querer explorar más y más sobre el resto del mundo"
@@ -131,7 +109,7 @@ const nameRules = ref([
                         required
                         rows="3"
                         auto-grow
-                        counter="1000"
+                        counter="300"
                     ></v-textarea>
                 </v-col>
             </v-row>
@@ -140,6 +118,7 @@ const nameRules = ref([
                     <v-number-input
                         :reverse="false"
                         controlVariant="split"
+                        v-model="nuevoJuego.price"
                         label="Price"
                         :hideInput="false"
                         :inset="false"
@@ -150,15 +129,17 @@ const nameRules = ref([
                     <v-number-input
                         :reverse="false"
                         controlVariant="split"
+                        v-model:="nuevoJuego.discount"
                         label="Discount (%)"
                         :hideInput="false"
                         :inset="false"
+                        
                     ></v-number-input>
                 </v-col>
 
                 <v-col cols="12" md="4">
                     <v-select
-                        v-model="nuevoJuego.role"
+                        v-model="nuevoJuego.categories"
                         :rules="nameRules"
                         label="Categories"
                         :items="categories"

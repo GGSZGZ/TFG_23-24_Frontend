@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, onMounted,watch } from 'vue';
+import { useApiStore, pinia } from '../store/api';
 
 const search = ref('');
 const headers = ref([
@@ -12,102 +13,114 @@ const headers = ref([
     { key: 'actions', title: 'Actions', align: 'center', sortable: false }
 ]);
 
-// Ejemplo del array de juegos
-const initialGames = [
-    {
-        name: 'The Witcher 3: Wild Hunt',
-        description: 'An open world RPG set in a visually stunning fantasy universe full of meaningful choices and impactful consequences.',
-        synopsis: 'Play as Geralt of Rivia, a monster hunter for hire, as you embark on an epic journey in a war-ravaged world.',
-        price: 39.99,
-        discount: 10,
-        categories: 'Rol (RPG), Aventura, Acción, Mundo abierto'
-    },
-    {
-        name: 'Hades',
-        description: 'A god-like rogue-like dungeon crawler that combines the best aspects of Supergiant\'s critically acclaimed titles.',
-        synopsis: 'Defy the god of the dead as you hack and slash out of the Underworld in this rogue-like dungeon crawler from the creators of Bastion.',
-        price: 24.99,
-        discount: 20,
-        categories: 'Acción, Indie, Roguelike, Aventura'
-    },
-    {
-        name: 'Stardew Valley',
-        description: 'A farming simulation game where you can grow crops, raise animals, and build the farm of your dreams.',
-        synopsis: 'You\'ve inherited your grandfather\'s old farm plot in Stardew Valley. Armed with hand-me-down tools and a few coins, you set out to begin your new life.',
-        price: 14.99,
-        discount: 0,
-        categories: 'Simulación, Indie, Casual, Construcción de ciudades'
-    },
-    {
-        name: 'Half-Life: Alyx',
-        description: 'Valve returns to the Half-Life series with this VR-exclusive game set between the events of Half-Life and Half-Life 2.',
-        synopsis: 'Playing as Alyx Vance, you are humanity’s only chance for survival against the Combine forces.',
-        price: 59.99,
-        discount: 15,
-        categories: 'Realidad virtual (VR), Acción, Aventura, Ciencia ficción'
-    },
-    {
-        name: 'Among Us',
-        description: 'An online multiplayer game where players work together to complete tasks on a spaceship while trying to identify the impostors among them.',
-        synopsis: 'Join your crewmates in a multiplayer game of teamwork and betrayal! Play with 4-15 players online or via local WiFi.',
-        price: 4.99,
-        discount: 0,
-        categories: 'Multijugador masivo (MMO), Casual, Indie, Táctico'
-    }
-];
+interface Game {
+    gameID: number;
+    name: string;
+    description: string;
+    synopsis: string;
+    price: number;
+    discount: number;
+    categories: string;
+}
 
-// Definir las categorías como un conjunto
-const categoriesSet = new Set<string>();
+const initialGames = ref<Game[]>([]);
 
-// Obtener las categorías únicas de los juegos
-initialGames.forEach(game => {
-    const categoriesArray = game.categories.split(',').map(category => category.trim());
-    categoriesArray.forEach(category => categoriesSet.add(category));
+onMounted(async () => {
+    const apiStore = useApiStore(pinia);
+    const games = await apiStore.fetchGamesStudio(1); // AJUSTAR ID DEL ESTUDIO
+
+    initialGames.value = games.map((game: any) => ({
+        gameID: game.gameID,
+        name: game.name,
+        description: game.description,
+        synopsis: game.synopsis,
+        price: game.price,
+        discount: game.discount,
+        categories: game.categories
+    }));
+
+    // Obtener las categorías únicas de los juegos
+    const categoriesSet = new Set<string>();
+    initialGames.value.forEach(game => {
+        const categoriesArray = game.categories.split(',').map(category => category.trim());
+        categoriesArray.forEach(category => categoriesSet.add(category));
+    });
+
+    // Convertir el conjunto de categorías en un array
+    categoryOptions.value = Array.from(categoriesSet);
 });
 
-// Convertir el conjunto de categorías en un array
-const categoryOptions = Array.from(categoriesSet);
+const categoryOptions = ref<string[]>([]);
 
-const games = ref([...initialGames]);
+// Variable para almacenar los juegos en la tabla
+const games = ref<Game[]>([]);
+
+watch(initialGames, (newGames) => {
+    games.value = [...newGames];
+}, { immediate: true });
 
 // Variable de estado para controlar el índice del juego que se está editando
 const editingIndex = ref<number | null>(null);
 
 // Variable para guardar el juego original antes de la edición
-const originalGame = ref<Object | null>(null);
+const originalGame = ref<Game | null>(null);
 
-// Funciones para manejar los botones
+// Función para manejar el botón de editar
 const editGame = (index: number) => {
     editingIndex.value = index;
-    // Guardar una copia del juego original antes de la edición
     originalGame.value = { ...games.value[index] };
-    // Convertir las categorías del juego en un array
     games.value[index].categoriesArray = games.value[index].categories.split(',').map(category => category.trim());
 };
 
-const saveGame = () => {
-    // Actualizar las categorías del juego con las seleccionadas en el v-select
+// Función para guardar los cambios del juego editado
+const saveGame = async(index: number) => {
+    const gameID = games.value[index].gameID;
     games.value[editingIndex.value!].categories = games.value[editingIndex.value!].categoriesArray.join(', ');
+    const gameDTO={
+        name: games.value[editingIndex.value!].name,
+        description: games.value[editingIndex.value!].description,
+        synopsis: games.value[editingIndex.value!].synopsis,
+        price: Number(games.value[editingIndex.value!].price),
+        discount: Number(games.value[editingIndex.value!].discount),
+        categories: games.value[editingIndex.value!].categoriesArray.join(', ')
+    }
+    console.log(gameDTO);
+    
+    
+        const apiStore = useApiStore(pinia);
+        await apiStore.fetchUpdateGame(gameID,gameDTO);
+        alert('Game has been succesfully updated')
     editingIndex.value = null;
-    // Limpiar la copia del juego original
     originalGame.value = null;
+    
 };
+
+// Función para cancelar la edición y restaurar el juego original
 const saveGameCancel = (index: number) => {
-    // Restaurar el juego original antes de la edición
     games.value[index] = { ...originalGame.value };
     editingIndex.value = null;
-    // Limpiar la copia del juego original
     originalGame.value = null;
 };
 
-const deleteGame = (index: number) => {
-    games.value.splice(index, 1);
+// Función para eliminar un juego de la tabla
+const deleteGame = async (index: number) => {
+    const gameID = games.value[index].gameID;
+    
+    try {
+        const apiStore = useApiStore(pinia);
+        await apiStore.fetchDeleteGame(gameID);
+        games.value.splice(index, 1);
+        alert('Game has been succesfully deleted')
+    } catch (error) {
+        console.error('Error deleting game:', error);
+    }
 };
+
 
 </script>
 
 <template>
-    <v-card flat>
+    <v-card flat >
         <template v-slot:title>
             <span style="font-weight: bold; text-decoration: underline;">Games</span>
         </template>
@@ -170,11 +183,24 @@ const deleteGame = (index: number) => {
             </template>
 
             <template v-slot:item.actions="{ item, index }">
-                <v-btn v-if="editingIndex === index" color="primary" @click="saveGame">Guardar</v-btn>
-                <v-btn v-if="editingIndex === index" color="primary" @click="saveGameCancel(index)">Cancelar</v-btn>
-                <v-btn v-else color="primary" @click="editGame(index)">Editar</v-btn>
-                <v-btn color="error" @click="deleteGame(index)">Eliminar</v-btn>
+                <v-btn v-if="editingIndex === index" color="primary" @click="saveGame(index)">Save</v-btn>
+                <v-btn v-if="editingIndex === index" color="primary" @click="saveGameCancel(index)">Cancel</v-btn>
+                <v-btn v-else color="primary" @click="editGame(index)">Edit</v-btn>
+                <v-btn color="error" @click="deleteGame(index)">Delete</v-btn>
             </template>
         </v-data-table>
     </v-card>
 </template>
+
+<style scoped>
+::v-deep .bg-error,.bg-primary { 
+    color: #ffffff; 
+    cursor: pointer; 
+    font-size: var(--text-single-100-regular-size); 
+    transition: background-color 0.3s, color 0.3s ;
+    font-family: var(--font-roboto) ;
+}
+::v-deep .bg-error:hover {
+    color: var(--color-blue) !important;
+}
+</style>
