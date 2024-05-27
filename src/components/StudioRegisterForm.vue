@@ -3,18 +3,23 @@ import { useField, useForm } from 'vee-validate';
 import { ref } from 'vue';
 import { useApiStore, pinia } from '../store/api';
 import { RouterLink } from 'vue-router';
+import { useRouter } from 'vue-router';
 
-async function proveExistingStudio(email: string): Promise<boolean> {
+async function proveExistingStudio(email: string, checkID = false): Promise<boolean | any> {
   const studios = await useApiStore(pinia).fetchStudios();
   
   for (const studio of studios) {
     if (studio.emailLogin === email) {
-      alert('Este estudio ya se ha registrado');
-      return true;
+      if (checkID==false) {
+        alert('Este estudio ya se ha registrado');
+        return true;
+      } else {
+        return studio;
+      }
     }
   }
-  return false;
 }
+
 
 
 const fetchPostUser = async (values: any) => {
@@ -26,15 +31,26 @@ const fetchPostUser = async (values: any) => {
         fundation: new Date().toISOString(),
         country: values.country,
         emailLogin: values.email,
-        password: values.passwd
+        password: values.passwd,
+        emailContact: 'none',
+        website: 'none'
       };
       await useApiStore(pinia).fetchPostStudio(studioDTO);
+      
+      // Espera a que se complete la búsqueda del nuevo estudio
+      const newStudio = await proveExistingStudio(values.email, true);
+      
+      console.log(newStudio);
+      const studioJSON = JSON.stringify(newStudio);
+      localStorage.setItem('studioLogged', studioJSON);
+      alert('El estudio se ha logeado correctamente');
       handleClear();
     }
   } catch (err) {
     console.error(err);
   }
 };
+
 
 const { handleSubmit, handleReset } = useForm({
   validationSchema: {
@@ -72,12 +88,25 @@ const passwd = useField('passwd');
 const visible = ref(false);
 
 const submit = handleSubmit((values) => {
+      localStorage.setItem('user', JSON.stringify(null));
+      localStorage.setItem('jwtToken', JSON.stringify(null));
+      localStorage.setItem('messageLiked','');
   fetchPostUser(values);
 });
 
 const handleClear = () => {
   handleReset();
+  setTimeout(() => {
+         navigateToHome();
+       }, 100);
 };
+const router = useRouter();
+const navigateToHome = async() => {
+      router.push({ name: 'store' });
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
+  };
 </script>
 
 

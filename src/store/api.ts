@@ -240,6 +240,7 @@ export const useApiStore = defineStore('flashgaminghub', {
         }
         const studioData = await response.json();
         localStorage.setItem("studioGame", JSON.stringify(studioData));
+        return studioData;
       } catch (error: any) {
         console.error('Error al obtener los datos:', error.message)
         throw error

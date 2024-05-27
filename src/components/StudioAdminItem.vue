@@ -43,7 +43,10 @@ async function addGame() {
         alert('Faltan campos por completar');
     } else {
         const categoriesString = nuevoJuego.value.categories.join(', ');
-        // CAMBIAR EL ID DEL ESTUDIO
+        const studioLocal = localStorage.getItem('studioLogged');
+    if (studioLocal && studioLocal !== 'null') {
+        const studioObject = JSON.parse(studioLocal);
+    //Para futuras mejoras habrá mas tiendas por el momento en la 1
         const gameData = {
             name,
             description,
@@ -52,10 +55,13 @@ async function addGame() {
             releaseDate: new Date().toISOString(),
             price,
             discount,
-            studioID : '1'
+            studioID : studioObject.studioID,
+            storeID : '1'
         };
+        
         await useApiStore(pinia).fetchPostGame(gameData);
         cleanFields();
+    }
     }
 }
 function cleanFields(){

@@ -2,7 +2,6 @@
 import { ref, reactive, onMounted } from 'vue';
 import { useApiStore, pinia } from '../store/api';
 
-// Definimos variables reactivas para almacenar los datos del estudio y el estado de edición
 const studioData = ref(null);
 const isEditing = ref(false);
 const editedData = reactive({
@@ -16,22 +15,14 @@ const editedData = reactive({
 });
 
 onMounted(async () => {
-  const studios = await useApiStore(pinia).fetchStudios();
-  // TODO: obtener el email de login del estudio desde el localStorage
-  const emailLogin = 'studio1@gmail.com';
-  const foundStudio = checkStudio(emailLogin, studios);
-  if (foundStudio) {
-    studioData.value = foundStudio;
-    //copia todas las propiedades de foundStudio al objeto editedData.
-    Object.assign(editedData, foundStudio);
-
-    
-  }
+    const studioLocal = localStorage.getItem('studioLogged');
+    if (studioLocal && studioLocal !== 'null') {
+        const studioObject = JSON.parse(studioLocal);
+        const studioSelected = await useApiStore(pinia).fetchStudio(studioObject.studioID);
+        Object.assign(editedData, studioSelected);
+        studioData.value = studioSelected;
+    }
 });
-
-function checkStudio(email: string, studios: any) {
-  return studios.find((studio: any) => studio.emailLogin === email);
-}
 
 const enableEditing = () => {
   isEditing.value = true;
@@ -40,30 +31,30 @@ const enableEditing = () => {
 const saveChanges = async () => {
   const apiStore = useApiStore(pinia);
 
-  // Validar campos vacíos
   if (!editedData.name.trim() || !editedData.country.trim() || !editedData.password.trim()) {
     alert('Todos los campos deben estar llenos.');
     return;
   }
-   // Validación del correo electrónico
-   if (!editedData.emailLogin.endsWith('@gmail.com') || editedData.emailLogin.split('@')[0].trim() === '') {
+
+  if (!editedData.emailLogin.endsWith('@gmail.com') || editedData.emailLogin.split('@')[0].trim() === '') {
     editedData.emailLogin = `${editedData.name.toLowerCase()}@gmail.com`;
   }
   if (!editedData.emailContact.endsWith('@gmail.com') || editedData.emailContact.split('@')[0].trim() === '') {
     editedData.emailContact = `${editedData.name.toLowerCase()}@gmail.com`;
   }
 
-  // Crear un objeto plano con los datos editados
   const studioPayload = { ...editedData };
-
-  // Eliminar las propiedades que quieres quitar
   delete studioPayload.games;
   delete studioPayload.studioID;
   delete studioPayload.fundation;
 
-  await apiStore.fetchUpdateStudio(studioData.value.studioID, studioPayload);
-  studioData.value = { ...studioPayload };
-  isEditing.value = false;
+  if (studioData.value && studioData.value.studioID) {
+    await apiStore.fetchUpdateStudio(studioData.value.studioID, studioPayload);
+    Object.assign(studioData.value, studioPayload);
+    isEditing.value = false;
+  } else {
+    console.error('El ID del estudio no está definido.');
+  }
 };
 
 </script>
@@ -139,6 +130,7 @@ const saveChanges = async () => {
         </template>
     </div>
 </template>
+
 
   
   

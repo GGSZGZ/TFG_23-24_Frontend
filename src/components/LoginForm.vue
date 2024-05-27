@@ -36,6 +36,29 @@
   }
     }
 
+    async function loginStudio(values: any) {
+  try {
+    const studios = await useApiStore(pinia).fetchStudios();
+
+    for (const studio of studios) {
+      if (studio.emailLogin === values.emailTlf && studio.password === values.passwd) {
+        const studioJSON = JSON.stringify(studio);
+        // Almacenar la cadena JSON en el localStorage
+        localStorage.setItem('studioLogged', studioJSON);
+        alert('El estudio se ha logeado correctamente');
+        return;
+      }
+    }
+    // Si ningún estudio coincide con el correo electrónico y la contraseña proporcionados
+    alert('El correo o la contraseña son inválidos');
+    return null;
+  } catch (error) {
+    console.error('Error durante el inicio de sesión:', error);
+    alert('Ocurrió un error durante el inicio de sesión.');
+  }
+}
+
+
   
 
   const { handleSubmit, handleReset } = useForm({
@@ -65,16 +88,32 @@
   const visible = ref(false);
 
   const submit = handleSubmit(values => {
-    existingUser.value=false;
-    loginUserToken(values);
+    if(studio.value.value=='1'){
+      localStorage.setItem('user', JSON.stringify(null));
+      localStorage.setItem('jwtToken', JSON.stringify(null));
+      localStorage.setItem('messageLiked','');
+       loginStudio(values);
+       setTimeout(() => {
+         navigateToHome();
+       }, 100);
+    }else{
+      localStorage.setItem('studioLogged', JSON.stringify(null));
+      existingUser.value=false;
+      loginUserToken(values);
+    }
     
-  })
+  });
 
   const logOut = () =>{
+    
     if(localStorage.getItem('jwtToken')!=JSON.stringify(null)){
       localStorage.setItem('user', JSON.stringify(null));
       localStorage.setItem('jwtToken', JSON.stringify(null));
       localStorage.setItem('messageLiked','');
+      alert('Se ha cerrado sesión');
+      navigateToHome();
+    }else if(localStorage.getItem('studioLogged')!=JSON.stringify(null)){
+      localStorage.setItem('studioLogged', JSON.stringify(null));
       alert('Se ha cerrado sesión');
       navigateToHome();
     }else{

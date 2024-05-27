@@ -27,7 +27,11 @@ const initialGames = ref<Game[]>([]);
 
 onMounted(async () => {
     const apiStore = useApiStore(pinia);
-    const games = await apiStore.fetchGamesStudio(1); // AJUSTAR ID DEL ESTUDIO
+    const studioLocal = localStorage.getItem('studioLogged');
+    if (studioLocal && studioLocal !== 'null') {
+        const studioObject = JSON.parse(studioLocal);
+    
+    const games = await apiStore.fetchGamesStudio(studioObject.studioID);
 
     initialGames.value = games.map((game: any) => ({
         gameID: game.gameID,
@@ -45,9 +49,10 @@ onMounted(async () => {
         const categoriesArray = game.categories.split(',').map(category => category.trim());
         categoriesArray.forEach(category => categoriesSet.add(category));
     });
-
+    
     // Convertir el conjunto de categorías en un array
     categoryOptions.value = Array.from(categoriesSet);
+}
 });
 
 const categoryOptions = ref<string[]>([]);
@@ -84,7 +89,6 @@ const saveGame = async(index: number) => {
         discount: Number(games.value[editingIndex.value!].discount),
         categories: games.value[editingIndex.value!].categoriesArray.join(', ')
     }
-    console.log(gameDTO);
     
     
         const apiStore = useApiStore(pinia);
