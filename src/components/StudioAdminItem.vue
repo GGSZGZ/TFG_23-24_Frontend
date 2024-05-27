@@ -122,6 +122,7 @@ const nameRules = ref([
                         label="Price"
                         :hideInput="false"
                         :inset="false"
+                        :min="0"
                     ></v-number-input>
                 </v-col>
 
@@ -133,7 +134,8 @@ const nameRules = ref([
                         label="Discount (%)"
                         :hideInput="false"
                         :inset="false"
-                        
+                        :min="0"
+                        :max="100"
                     ></v-number-input>
                 </v-col>
 
