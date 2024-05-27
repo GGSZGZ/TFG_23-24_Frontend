@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import CartItem from '@/components/CartItem.vue'
 import TotalItem from '@/components/TotalItem.vue'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const navigateToHome = () => {
+  router.push('/');
+};
 </script>
 
 <template>
@@ -10,7 +17,7 @@ import TotalItem from '@/components/TotalItem.vue'
       <CartItem class="cart-item" />
       <TotalItem class="total-item" />
     </div>
-    <button class="continue">Continue Buying</button>
+    <button class="continue" @click="navigateToHome">Continue Buying</button>
 </template>
 
 <style scoped>
@@ -48,10 +55,13 @@ import TotalItem from '@/components/TotalItem.vue'
     background-color: var(--color-yellow);
     width:140px;
     padding: 15px;
-    margin-top: -10px;
+    margin-top: 10px;
     margin-bottom: 10px;
     margin-left: 20px;
     border-radius: 5px;
     font-family: var(--font-roboto);
+}
+.continue:hover{
+  color: var(--color-blue);
 }
 </style>

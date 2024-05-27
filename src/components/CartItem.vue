@@ -1,82 +1,82 @@
 <script setup lang="ts">
-import { useApiStore, pinia } from '../store/api';
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useApiStore, pinia } from '../store/api';
 
-// const games = ref([]);
+const games = ref([]);
 
-// const formatDate = (dateString : string) => {
-//   const date = new Date(dateString);
-//   const options = { month: 'short', day: 'numeric', year: 'numeric' };
-//   return date.toLocaleDateString('en-US', options);
-// };
+const formatDate = (dateString : string) => {
+  const date = new Date(dateString);
+  const options = { month: 'short', day: 'numeric', year: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
+};
 
-// const categories = (category: string) => {
-//   return category.split(','); 
-// }
+const categories = (category: string) => {
+  return category.split(','); 
+}
 
-// onMounted(async () => {
-//   games.value = await useApiStore(pinia).fetchGames();
-//   if (games.value.length > 0) {
-//     games.value.forEach(game => {
-//       if (game.discount > 0) {
-//         game.finalPrice = calculateDiscountedPrice(game.price, game.discount);
-//       } else {
-//         game.finalPrice = game.price;
-//       }
-//     });
-//   }
-// });
+onMounted(async () => {
+  const gamesBoughtString = localStorage.getItem('gamesSelected');
+  if (gamesBoughtString) {
+    const gamesBought: string[] = JSON.parse(gamesBoughtString);
+    for (const element of gamesBought) {
+      const game = await useApiStore(pinia).fetchGame(element);
+      games.value.push(game);
+    }
+  }
+});
 
-// const calculateDiscountedPrice = (price, discount) => {
-//   return (price - (price * (discount / 100))).toFixed(2);
-// };
+const calculateDiscountedPrice = (price: number, discount: number) => {
+  return (price - (price * (discount / 100))).toFixed(2);
+};
 
-// const router = useRouter();
+const deleteGame = (index: number) => {
+  const gameToDelete = games.value[index];
+  games.value.splice(index, 1); // Elimina el juego de la lista
+  const updatedGames = games.value.map(game => game.gameID);
+  localStorage.setItem('gamesSelected', JSON.stringify(updatedGames)); // Actualiza el almacenamiento local
+};
 
-// const navigateToGame = (id: any) => {
-//   router.push({ name: 'game', params: { id: id } });
-// };
+const deleteAllGames = () => {
+  games.value = []; // Vacía la lista de juegos
+  localStorage.removeItem('gamesSelected'); // Elimina el almacenamiento local
+};
+
 </script>
 
 <template>
   <v-container class="cards-container" fluid>
     <div class="cards">
-      <!-- <div class="card" v-for="game in games" :key="game.gameID"  @click="navigateToGame(game.gameID)"> -->
-        <div class="card">
+      <div class="card" v-for="(game, index) in games" :key="game.gameID"  @click="navigateToGame(game.gameID)">
         <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
         <div class="card-content">
-          <!-- <h2 class="card-title">{{ game.name }}</h2> -->
-          <h2 class="card-title">Game</h2>
+          <h2 class="card-title">{{ game.name }}</h2>
           
           <div class="card-subtitle">
-            <!-- <span v-for="(category) in categories(game.categories)" :key="category" class="category">{{ category }}</span> -->
-            <span class="category">Categoria</span>
+            <span v-for="(category) in categories(game.categories)" :key="category" class="category">{{ category }}</span>
           </div>
 
-          <!-- <div class="releaseDate">{{ formatDate(game.releaseDate) }}</div> -->
-          <div class="releaseDate">Date Release</div>
+          <div class="releaseDate">{{ formatDate(game.releaseDate) }}</div>
 
-          <div class="discounted-price">
-            <span class="discount">10%</span>
-            <span class="original-price">40€</span>
-            <span class="current-price">36€</span>
+          <div class="discounted-price" v-if="game.discount > 0">
+            <span class="discount">{{ game.discount }}%</span>
+            <span class="original-price">{{ game.price }}€</span>
+            <span class="current-price">{{ calculateDiscountedPrice(game.price, game.discount) }}€</span>
           </div>
-          <!-- <p v-else class="card-price">{{ game.price }}€</p> -->
+          <p v-else class="card-price">{{ game.price }}€</p>
         </div>
-        <button class="card-button">Delete</button>
+        <button class="card-button" @click="deleteGame(index)">Delete</button>
       </div>
-      <button class="deleteAll">Delete All</button>
+      <button class="deleteAll" @click="deleteAllGames()">Delete All</button>
     </div>
-    <!-- </div> -->
   </v-container>
 </template>
 
 
 
+
 <style scoped>
 .cards-container {
-  height: auto;
+  height: 610px;
   overflow-y: auto;
   scrollbar-width: none; /* Scroll invisible */
 }
@@ -201,6 +201,9 @@ import { useRouter } from 'vue-router';
   outline: none;
   font-family: var(--font-roboto);
 }
+.card-button:hover {
+    color: red;
+}
 
 .category {
   margin-right: 10px;
@@ -221,5 +224,8 @@ import { useRouter } from 'vue-router';
     border-radius: 5px;
     align-self: self-end; /* Centra el botón horizontalmente */
     font-family: var(--font-roboto);
+}
+.deleteAll:hover {
+    color: red;
 }
 </style>

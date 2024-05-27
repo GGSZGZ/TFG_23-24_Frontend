@@ -111,9 +111,11 @@
       localStorage.setItem('jwtToken', JSON.stringify(null));
       localStorage.setItem('messageLiked','');
       alert('Se ha cerrado sesión');
+      localStorage.setItem('gamesSelected','[]');
       navigateToHome();
     }else if(localStorage.getItem('studioLogged')!=JSON.stringify(null)){
       localStorage.setItem('studioLogged', JSON.stringify(null));
+      localStorage.setItem('gamesSelected','[]');
       alert('Se ha cerrado sesión');
       navigateToHome();
     }else{

@@ -18,7 +18,26 @@ const calculateDiscountedPrice = (price, discount) => {
   return (price - (price * (discount / 100))).toFixed(2);
 };
 
+const addToCart = () => {
+ const user= localStorage.getItem('jwtToken');
+ if(!user || user== 'null') {
+  alert('Debes iniciar sesión como usuario para comprar un juego.')
+  }else{
+    //CHECK games of user if is already bought!!!!!!!!!!!!!!!!!
+ //SAVE GAMES
+    let gamesSelected = JSON.parse(localStorage.getItem('gamesSelected') || '[]');
 
+    // Verificar si el ID de juego ya está presente en el array
+    if (!gamesSelected.includes(game.value.gameID)) {
+        gamesSelected.push(game.value.gameID);
+        // Almacenar el array actualizado en localStorage
+        localStorage.setItem('gamesSelected', JSON.stringify(gamesSelected));
+        router.push({ name: 'cart'});
+    } else {
+        alert('No puedes comprar el mismo juego dos veces')
+    }
+}
+};
 
 
 </script>
@@ -31,7 +50,7 @@ const calculateDiscountedPrice = (price, discount) => {
       </div>
         <div class="purchase-info">
           <div class="price">{{calculateDiscountedPrice(game.price, game.discount)}}€</div>
-          <button class="cart">Add To Cart</button>
+          <button class="cart" @click="addToCart(game.gameID)">BUY</button>
         </div>
       
     </div>
