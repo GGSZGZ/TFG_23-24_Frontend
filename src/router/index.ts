@@ -6,6 +6,9 @@ import ProfileView from '../views/ProfileView.vue'
 import GameView from '../views/GameView.vue'
 import AdminView from '@/views/AdminView.vue'
 import StudioAdminView from '@/views/StudioAdminView.vue'
+import CartView from '@/views/CartView.vue'
+import PaymentView from '@/views/PaymentView.vue'
+import StudioView from '@/views/StudioView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -38,6 +41,21 @@ const router = createRouter({
       path: '/studio&admin',
       name: 'studio&admin',
       component: StudioAdminView
+    },
+    {
+      path: '/cart',
+      name: 'cart',
+      component: CartView
+    },
+    {
+      path: '/payment',
+      name: 'payment',
+      component: PaymentView
+    },
+    {
+      path: '/studio',
+      name: 'studio',
+      component: StudioView
     },
   ]
 })
