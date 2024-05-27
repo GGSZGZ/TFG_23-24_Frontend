@@ -60,6 +60,7 @@
   })
   const emailTlf = useField('emailTlf')
   const checkbox = useField('checkbox')
+  const studio = useField('studio')
   const passwd = useField('passwd')
   const visible = ref(false);
 
@@ -111,6 +112,14 @@
           type="checkbox"
         >
         </v-checkbox>
+        <v-checkbox
+          v-model="studio.value.value"
+          value="1"
+          label="I am a Studio"
+          type="checkbox"
+          class="studio-checkbox"
+        >
+        </v-checkbox>
         <div class="buttons">
           <v-btn class="me-4" type="submit">Login</v-btn>
       
@@ -146,6 +155,10 @@ label{
   cursor: pointer;
   transition: .5s ease-in-out;
   margin-bottom: 40px;
+}
+.studio-checkbox{
+  display: flex;
+  justify-content: center;
 }
 .buttons{
   display: flex;
