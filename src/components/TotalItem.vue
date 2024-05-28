@@ -1,17 +1,38 @@
+<script setup lang="ts">
+import { ref, onMounted, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const props = defineProps<{
+  finalPrice: number;
+}>();
+
+const formattedFinalPrice = ref('0.00');
+
+watchEffect(() => {
+  formattedFinalPrice.value = props.finalPrice.toFixed(2);
+});
+async function navigateToPayment() {
+  // console.log(formattedFinalPrice.value);
+  // almacenar precio si se quiere hacer algo con el luego
+  if(formattedFinalPrice.value!=='0.00'){
+  router.push({ name: 'payment'});
+  }else{
+    alert('Need to select at least one game.')
+  }
+}
+</script>
+
 <template>
-    <div class="total-estimated">
-      <div class="header">
-        <span>Total Estimated</span>
-        <span class="price">PRICE</span>
-      </div>
-      <p class="paragraph">Sales tax will be calculated during checkout (if applicable)</p>
-      <button>Go To Payment</button>
+  <div class="total-estimated">
+    <div class="header">
+      <span>Total Estimated</span>
+      <span class="price">{{ formattedFinalPrice }}€</span>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-      
-  </script>
+    <p class="paragraph">Sales tax will be calculated during checkout (if applicable)</p>
+    <button @click="navigateToPayment">Go To Payment</button>
+  </div>
+</template>
+
   
   <style scoped>
   .total-estimated {

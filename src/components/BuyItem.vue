@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApiStore, pinia } from '../store/api';
+import { jwtDecode } from 'jwt-decode';
 
 const router = useRouter();
 const game = ref(null);
@@ -18,7 +19,32 @@ const calculateDiscountedPrice = (price, discount) => {
   return (price - (price * (discount / 100))).toFixed(2);
 };
 
-
+const addToCart =async () => {
+ const user= localStorage.getItem('jwtToken');
+ if(!user || user== 'null') {
+  alert('Debes iniciar sesión como usuario para comprar un juego.')
+  }else{
+    const decodedToken = jwtDecode(user) as { id: number };
+    
+    //compruebo que el user no tenga ya ese juego en la biblioteca
+   const gamesUser= await useApiStore(pinia).fetchGamesLibraryGameUser(decodedToken.id);
+   let exist=false;
+   gamesUser.forEach((libraryGame:any) => {
+      if(libraryGame.gameID==game.value!.gameID) {
+        alert('Error, cannot buy same game twice');
+        exist=true;
+      }
+   });
+   if(exist==false){
+    const message = await useApiStore(pinia).fetchPostGameShoppingCart(decodedToken.id,game.value!.gameID);
+    if(message=='Juego añadido al carrito correctamente'){
+        router.push({ name: 'cart'});
+    }else{
+      alert('Error, cannot buy the game twice.');
+    }
+   }
+}
+};
 
 
 </script>
@@ -31,7 +57,7 @@ const calculateDiscountedPrice = (price, discount) => {
       </div>
         <div class="purchase-info">
           <div class="price">{{calculateDiscountedPrice(game.price, game.discount)}}€</div>
-          <button class="cart">Add To Cart</button>
+          <button class="cart" @click="addToCart(game.gameID)">BUY</button>
         </div>
       
     </div>

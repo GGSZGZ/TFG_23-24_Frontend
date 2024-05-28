@@ -1,86 +1,130 @@
 <script setup lang="ts">
-import { useApiStore, pinia } from '../store/api';
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useApiStore, pinia } from '../store/api';
+import {jwtDecode} from 'jwt-decode';
 
-// const games = ref([]);
+const games = ref([]);
+const user = localStorage.getItem('jwtToken');
+const decodedToken = jwtDecode(user!) as { id: number };
 
-// const formatDate = (dateString : string) => {
-//   const date = new Date(dateString);
-//   const options = { month: 'short', day: 'numeric', year: 'numeric' };
-//   return date.toLocaleDateString('en-US', options);
-// };
+// Emitir el evento
+const emit = defineEmits(['update-price']);
 
-// const categories = (category: string) => {
-//   return category.split(','); 
-// }
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const options = { month: 'short', day: 'numeric', year: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
+};
 
-// onMounted(async () => {
-//   games.value = await useApiStore(pinia).fetchGames();
-//   if (games.value.length > 0) {
-//     games.value.forEach(game => {
-//       if (game.discount > 0) {
-//         game.finalPrice = calculateDiscountedPrice(game.price, game.discount);
-//       } else {
-//         game.finalPrice = game.price;
-//       }
-//     });
-//   }
-// });
+const categories = (category: string) => {
+  return category.split(',');
+}
 
-// const calculateDiscountedPrice = (price, discount) => {
-//   return (price - (price * (discount / 100))).toFixed(2);
-// };
+onMounted(async () => {
+  if (user) {
+    const fetchGames = await useApiStore(pinia).fetchGamesShoppingCart(decodedToken.id);
+    games.value = fetchGames;
 
-// const router = useRouter();
+    // Initialize prices and total price in localStorage
+    let prices = [];
+    let totalPrice = 0;
+    games.value.forEach(game => {
+      const finalPrice = game.discount > 0 ? parseFloat(calculateDiscountedPrice(game.price, game.discount)) : game.price;
+      prices.push({ gameID: game.gameID, price: finalPrice });
+      totalPrice += finalPrice;
+    });
+    localStorage.setItem('prices', JSON.stringify(prices));
+    localStorage.setItem('finalPrice', totalPrice.toString());
 
-// const navigateToGame = (id: any) => {
-//   router.push({ name: 'game', params: { id: id } });
-// };
+    // Emitir el evento de actualización de precio
+    emit('update-price', totalPrice);
+  }
+});
+
+const calculateDiscountedPrice = (price: number, discount: number) => {
+  return (price - (price * (discount / 100))).toFixed(2);
+};
+
+const calculatePrice = (price: number, discount: number) => {
+  const finalPrice = discount > 0 ? parseFloat(calculateDiscountedPrice(price, discount)) : price;
+  return finalPrice.toFixed(2);
+};
+
+const updateLocalStorageAfterDeletion = (gameID: number) => {
+  let prices = JSON.parse(localStorage.getItem('prices') || '[]');
+  let totalPrice = parseFloat(localStorage.getItem('finalPrice') || '0');
+
+  const gamePrice = prices.find(p => p.gameID === gameID)?.price;
+  if (gamePrice !== undefined) {
+    totalPrice -= gamePrice;
+    prices = prices.filter(p => p.gameID !== gameID);
+  }
+
+  localStorage.setItem('prices', JSON.stringify(prices));
+  localStorage.setItem('finalPrice', totalPrice.toString());
+
+  // Emitir el evento de actualización de precio
+  emit('update-price', totalPrice);
+};
+
+const deleteGame = async (gameID: number, event: Event) => {
+  event.stopPropagation();
+  await useApiStore(pinia).fetchDeleteGameShoppingCart(decodedToken.id, gameID);
+  games.value = games.value.filter(game => game.gameID !== gameID);
+  updateLocalStorageAfterDeletion(gameID);
+};
+
+const deleteAllGames = async () => {
+  for (const game of games.value) {
+    await useApiStore(pinia).fetchDeleteGameShoppingCart(decodedToken.id, game.gameID);
+  }
+  games.value = [];
+  localStorage.removeItem('prices');
+  localStorage.removeItem('finalPrice');
+
+  // Emitir el evento de actualización de precio
+  emit('update-price', 0);
+};
 </script>
 
 <template>
   <v-container class="cards-container" fluid>
     <div class="cards">
-      <!-- <div class="card" v-for="game in games" :key="game.gameID"  @click="navigateToGame(game.gameID)"> -->
-        <div class="card">
+      <div class="card" v-for="(game, index) in games" :key="index">
         <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
         <div class="card-content">
-          <!-- <h2 class="card-title">{{ game.name }}</h2> -->
-          <h2 class="card-title">Game</h2>
+          <h2 class="card-title">{{ game.name }}</h2>
           
           <div class="card-subtitle">
-            <!-- <span v-for="(category) in categories(game.categories)" :key="category" class="category">{{ category }}</span> -->
-            <span class="category">Categoria</span>
+            <span v-for="category in categories(game.categories).slice(0, 2)" :key="category" class="category">{{ category }}</span>
           </div>
 
-          <!-- <div class="releaseDate">{{ formatDate(game.releaseDate) }}</div> -->
-          <div class="releaseDate">Date Release</div>
+          <div class="releaseDate">{{ formatDate(game.releaseDate) }}</div>
 
-          <div class="discounted-price">
-            <span class="discount">10%</span>
-            <span class="original-price">40€</span>
-            <span class="current-price">36€</span>
+          <div class="discounted-price" v-if="game.discount > 0">
+            <span class="discount">{{ game.discount }}%</span>
+            <span class="original-price">{{ game.price }}€</span>
+            <span class="current-price">{{ calculatePrice(game.price, game.discount) }}€</span>
           </div>
-          <!-- <p v-else class="card-price">{{ game.price }}€</p> -->
+          <p v-else class="card-price">{{ calculatePrice(game.price, 0) }}€</p>
         </div>
-        <button class="card-button">Delete</button>
+        <button class="card-button" @click.stop="deleteGame(game.gameID, $event)">Delete</button>
       </div>
-      <button class="deleteAll">Delete All</button>
+      <button class="deleteAll" @click="deleteAllGames">Delete All</button>
     </div>
-    <!-- </div> -->
   </v-container>
 </template>
 
 
 
+
+
 <style scoped>
 .cards-container {
-  height: auto;
+  height: 610px;
   overflow-y: auto;
-  scrollbar-width: none; /* Scroll invisible */
+  scrollbar-width: none;
 }
-
 
 .cards {
   display: flex;
@@ -97,7 +141,7 @@ import { useRouter } from 'vue-router';
   background-color: var(--color-black);
   border-radius: 20px;
   overflow: hidden;
-  margin-bottom: 10px; /* Añadir margen inferior entre las tarjetas */
+  margin-bottom: 10px;
 }
 
 .card-image {
@@ -114,7 +158,7 @@ import { useRouter } from 'vue-router';
 
 .card-title {
   bottom: 15px;
-  right:5px;
+  right: 5px;
   position: relative;
   color: var(--neutral-colors-white);
   font-family: var(--font-archivo-black);
@@ -169,7 +213,7 @@ import { useRouter } from 'vue-router';
 }
 
 .card-subtitle,
-.releaseDate { 
+.releaseDate {
   position: relative;
   bottom: 20px;
   height: 40px;
@@ -202,6 +246,10 @@ import { useRouter } from 'vue-router';
   font-family: var(--font-roboto);
 }
 
+.card-button:hover {
+  color: red;
+}
+
 .category {
   margin-right: 10px;
   top: 5%;
@@ -212,14 +260,19 @@ import { useRouter } from 'vue-router';
   padding: 0px 5px;
   box-shadow: 3px 3px 4px 0 var(--color-blue);
 }
-.deleteAll{
-    background-color: var(--color-yellow);
-    width:100px;
-    padding: 10px;
-    margin-top: 10px;
-    margin-right: 20px;
-    border-radius: 5px;
-    align-self: self-end; /* Centra el botón horizontalmente */
-    font-family: var(--font-roboto);
+
+.deleteAll {
+  background-color: var(--color-yellow);
+  width: 100px;
+  padding: 10px;
+  margin-top: 10px;
+  margin-right: 20px;
+  border-radius: 5px;
+  align-self: flex-end;
+  font-family: var(--font-roboto);
+}
+
+.deleteAll:hover {
+  color: red;
 }
 </style>

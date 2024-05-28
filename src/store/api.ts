@@ -454,6 +454,77 @@ export const useApiStore = defineStore('flashgaminghub', {
         throw error
       }
     },
+    async fetchPostGameShoppingCart(ShoppingCartID:number, gameId:number) {
+      try {
+        if (!this.token) {
+          console.error('No se encontró ningún token JWT en el localStorage');
+          return;
+        }
+        const response = await fetch(`https://localhost:7025/ShoppingCart/${ShoppingCartID}/games/${gameId}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.token}`
+          }
+        });
+        if (!response.ok) {
+          return 'Game already added';
+        }
+        return 'Juego añadido al carrito correctamente';
+      } catch (error : any) {
+        console.error('Error al añadir el juego al carrito:', error.message);
+        throw error;
+      }
+    },
+    async fetchDeleteGameShoppingCart(ShoppingCartID: number, gameId: number) {
+      try {
+        if (!this.token) {
+          console.error('No se encontró ningún token JWT en el localStorage');
+          return;
+        }
+    
+        const response = await fetch(`https://localhost:7025/ShoppingCart/${ShoppingCartID}/games/${gameId}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${this.token}`
+          }
+        });
+    
+        if (!response.ok) {
+          throw new Error('Error al eliminar el juego del carrito');
+        }
+    
+        return 'Juego eliminado del carrito correctamente';
+      } catch (error: any) {
+        console.error('Error al eliminar el juego del carrito:', error.message);
+        throw error;
+      }
+    },
+    async fetchGamesShoppingCart(id: number) {
+      try {
+        if (!this.token) {
+          console.error('No se encontró ningún token JWT en el localStorage');
+          return;
+        }
+    
+        const response = await fetch(`https://localhost:7025/ShoppingCart/${id}/games`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${this.token}`
+          }
+        });
+    
+        if (!response.ok) {
+          throw new Error('Error al obtener los juegos del carrito');
+        }
+    
+        const gamesInCart = await response.json();
+        return gamesInCart;
+      } catch (error: any) {
+        console.error('Error al obtener los juegos del carrito:', error.message);
+        throw error;
+      }
+    },
+    
     //END ShoppingCart
     //LibraryGameUser
     async fetchLibraryGameUsers() {
@@ -617,6 +688,27 @@ export const useApiStore = defineStore('flashgaminghub', {
       } catch (error: any) {
         console.error('Error al eliminar el elemento:', error.message)
         throw error
+      }
+    },
+    async fetchPostGameLibraryGameUser(LibraryGameUserID:number, gameId:number) {
+      try {
+        if (!this.token) {
+          console.error('No se encontró ningún token JWT en el localStorage');
+          return;
+        }
+        const response = await fetch(`https://localhost:7025/LibraryGameUser/${LibraryGameUserID}/games/${gameId}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.token}`
+          }
+        });
+        if (!response.ok) {
+          return 'Game already added';
+        }
+        return 'Juego añadido a la biblioteca correctamente';
+      } catch (error : any) {
+        console.error('Error al añadir el juego a la biblioteca:', error.message);
+        throw error;
       }
     },
     //End LibraryGameUser
@@ -945,7 +1037,6 @@ export const useApiStore = defineStore('flashgaminghub', {
         throw error
       }
     },
-    //NO FUNKA EL POST ERROR INTERNO SERVIOR 500
     async fetchPostCommunity(communityData:any) {
       try {
         if (!this.token) {
