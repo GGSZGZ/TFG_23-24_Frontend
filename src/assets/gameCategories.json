@@ -40,6 +40,7 @@
     "Role-Playing (RPG)",
     "Roguelike",
     "Science Fiction",
+    "Shooter",
     "Simulation",
     "Software",
     "Space Exploration",
@@ -51,6 +52,5 @@
     "Utilities",
     "Violent",
     "Visual Novel",
-    "Virtual Reality (VR)",
-    "Shoot 'em up"
+    "Virtual Reality (VR)"
 ]
