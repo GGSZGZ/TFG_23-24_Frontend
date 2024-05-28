@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import CartItem from '@/components/CartItem.vue'
 import TotalItem from '@/components/TotalItem.vue'
 import { useRouter } from 'vue-router';
@@ -8,17 +9,24 @@ const router = useRouter();
 const navigateToHome = () => {
   router.push('/');
 };
+
+const finalPrice = ref(0);
+
+const updatePrice = (price:any) => {
+  finalPrice.value = price;
+};
 </script>
 
 <template>
     <h1 class="title">Your Cart</h1>
     <hr class="bar">
     <div class="cart-content">
-      <CartItem class="cart-item" />
-      <TotalItem class="total-item" />
+      <CartItem class="cart-item" @update-price="updatePrice" />
+      <TotalItem class="total-item" :finalPrice="finalPrice" />
     </div>
     <button class="continue" @click="navigateToHome">Continue Buying</button>
 </template>
+
 
 <style scoped>
 

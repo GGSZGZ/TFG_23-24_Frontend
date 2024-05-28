@@ -60,16 +60,22 @@ const fetchPostUser = async (values: any) => {
 const postUpdateTables = async () => {
     const token = localStorage.getItem('jwtToken');
     const decodedToken = jwtDecode(token) as { id: number };
-    postLibraryCommunity(decodedToken.id);
+    postLibraryCart(decodedToken.id);
     updateUserIds(decodedToken.id);
 };
 
-function postLibraryCommunity(userId: any) {
+function postLibraryCart(userId: any) {
     const libraryUserDTO = {
         addedDate: Date.now,
         userID: userId
     };
+    const cartUserDTO = {
+        userID: userId,
+        total : 0,
+        fechaCreacion : new Date().toISOString()
+    };
     useApiStore(pinia).fetchPostLibraryGameUser(libraryUserDTO);
+    useApiStore(pinia).fetchPostShoppingCart(cartUserDTO);
 }
 
 function updateUserIds(userId: any) {
