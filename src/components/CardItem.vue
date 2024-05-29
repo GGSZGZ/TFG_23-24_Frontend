@@ -16,7 +16,7 @@ const categories = (category: string) => {
 }
 
 onMounted(async () => {
-  games.value = await useApiStore(pinia).fetchGames();
+  games.value = await useApiStore(pinia).fetchGamesGameShop(1);
   if (games.value.length > 0) {
     games.value.forEach(game => {
       if (game.discount > 0) {

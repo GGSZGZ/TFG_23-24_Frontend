@@ -6,7 +6,7 @@ const games = ref([]);
 const loading = ref(true);
 
 onMounted(async () => {
-  games.value = await useApiStore(pinia).fetchGames();
+  games.value = await useApiStore(pinia).fetchGamesGameShop(1);
   loading.value = false;
 });
 </script>
