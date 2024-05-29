@@ -2,12 +2,12 @@
 import { ref } from 'vue';
 import LibraryList from '@/components/LibraryList.vue';
 import LibraryLast from '@/components/LibraryLast.vue';
-import AnotherComponent from '@/components/AnotherComponent.vue'; // El componente que quieres mostrar al hacer clic
+import AnotherComponent from '@/components/AnotherComponent.vue';
 
-const currentComponent = ref(LibraryLast); // Estado compartido que maneja qué componente mostrar
+const currentComponent = ref({ is: LibraryLast, props: {}, key: 0 }); // Estado compartido que maneja qué componente mostrar
 
-const changeComponent = (component: any) => {
-  currentComponent.value = component;
+const changeComponent = ({ component, data }: { component: any; data: any }) => {
+  currentComponent.value = { is: component, props: { gameData: data }, key: currentComponent.value.key + 1 }; // Cambia la clave para forzar la actualización
 };
 </script>
 
@@ -17,10 +17,13 @@ const changeComponent = (component: any) => {
       <LibraryList @item-click="changeComponent" />
     </div>
     <div class="right-panel">
-      <component v-bind:is="currentComponent" />
+      <component :is="currentComponent.is" v-bind="currentComponent.props" :key="currentComponent.key" />
     </div>
   </div>
 </template>
+
+
+
 
 <style scoped>
 .container {

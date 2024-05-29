@@ -1,12 +1,29 @@
 <script setup lang="ts">
 import { useApiStore, pinia } from '../store/api';
 import { ref, onMounted } from 'vue';
+import { jwtDecode } from 'jwt-decode'; 
 import { useRouter } from 'vue-router';
-import AnotherComponent from './AnotherComponent.vue';
 
 const games = ref([]);
+const token = localStorage.getItem('jwtToken');
 
-const formatDate = (dateString : string) => {
+if (!token || token === 'null') {
+  alert('Debes iniciar sesión como usuario para comprar un juego.');
+} else {
+  const decodedToken = jwtDecode(token) as { id: number };
+
+  const fetchGames = async () => {
+    try {
+      games.value = await useApiStore(pinia).fetchGamesLibraryGameUser(decodedToken.id);
+    } catch (error) {
+      console.error('Error fetching games:', error);
+    }
+  };
+
+  onMounted(fetchGames);
+}
+
+const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   const options = { month: 'short', day: 'numeric', year: 'numeric' };
   return date.toLocaleDateString('en-US', options);
@@ -16,51 +33,30 @@ const categories = (category: string) => {
   return category.split(','); 
 }
 
-onMounted(async () => {
-  games.value = await useApiStore(pinia).fetchGames();
-  if (games.value.length > 0) {
-    games.value.forEach(game => {
-      if (game.discount > 0) {
-        game.finalPrice = calculateDiscountedPrice(game.price, game.discount);
-      } else {
-        game.finalPrice = game.price;
-      }
-    });
-  }
-});
-
-const calculateDiscountedPrice = (price, discount) => {
-  return (price - (price * (discount / 100))).toFixed(2);
-};
-
-
-
-const emit = defineEmits(['card-click']); // definir el emisor
-
-const handleClick = (item:any) => {
-  emit('card-click', AnotherComponent); // emitir el evento de clic
+const router = useRouter();
+const handleClick = (item: any) => {  
+  router.push({ name: 'game', params: { id: item.gameID } });
 };
 </script>
 
 <template>
   <v-container class="cards-container" fluid>
     <div class="cards">
-      <div class="card" v-for="game in games" :key="game.gameID"  @click="handleClick">
+      <div class="card" v-for="game in games" :key="game.gameID" @click="handleClick(game)">
         <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
         <div class="card-content">
           <h2 class="card-title">{{ game.name }}</h2>
-          
           <div class="card-subtitle">
             <span v-for="(category) in categories(game.categories)" :key="category" class="category">{{ category }}</span>
           </div>
-
           <div class="releaseDate">{{ formatDate(game.releaseDate) }}</div>
-
         </div>
       </div>
     </div>
   </v-container>
 </template>
+
+
 
 
 

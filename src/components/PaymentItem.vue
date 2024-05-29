@@ -109,7 +109,6 @@ async function saveUserGames() {
 
 const router = useRouter();
 const navigateToHome = async () => {
-  console.log('llevame a home');
   await router.push({ name: 'store' });
 };
 

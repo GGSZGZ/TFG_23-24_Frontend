@@ -29,6 +29,8 @@ const addToCart =async () => {
     //compruebo que el user no tenga ya ese juego en la biblioteca
    const gamesUser= await useApiStore(pinia).fetchGamesLibraryGameUser(decodedToken.id);
    let exist=false;
+   
+   if(gamesUser.status!=='Games not found'==false){
    gamesUser.forEach((libraryGame:any) => {
       if(libraryGame.gameID==game.value!.gameID) {
         alert('Error, cannot buy same game twice');
@@ -43,6 +45,15 @@ const addToCart =async () => {
       alert('Error, cannot buy the game twice.');
     }
    }
+  }else{
+    
+    const message = await useApiStore(pinia).fetchPostGameShoppingCart(decodedToken.id,game.value!.gameID);
+    if(message=='Juego añadido al carrito correctamente'){
+        router.push({ name: 'cart'});
+    }else{
+      alert('Error, cannot buy the game twice.');
+    }
+  }
 }
 };
 

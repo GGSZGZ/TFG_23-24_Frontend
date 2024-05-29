@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import LibraryCardItem from './LibraryCardItem.vue';
 import AnotherComponent from '@/components/AnotherComponent.vue';
 
-const emit = defineEmits(['item-click']); // definir el emisor
+const selectedGameData = ref<number | null>(null);
 
-const handleClick = (item:any) => {
-  emit('item-click', AnotherComponent); // cambiar a AnotherComponent al hacer clic
+const handleItemClick = (data: number) => {
+  selectedGameData.value = data.data;
 };
 </script>
 
 <template>
   <h2>Last Added Games</h2>
   <hr />
-  <LibraryCardItem @card-click="handleClick" />
+  <LibraryCardItem @item-click="handleItemClick" />
+  <AnotherComponent :gameData="selectedGameData" v-if="selectedGameData" />
 </template>
 
 <style scoped>

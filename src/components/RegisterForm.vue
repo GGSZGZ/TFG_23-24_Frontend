@@ -50,7 +50,9 @@ const fetchPostUser = async (values: any) => {
             localStorage.setItem('messageLiked', '');
             await postUpdateTables();
             alert('El usuario se ha registrado correctamente');
-            navigateToHome();
+            setTimeout(() => {
+                navigateToHome();
+            }, 1000);
         }
     } catch (err) {
         console.error(err);
@@ -60,11 +62,11 @@ const fetchPostUser = async (values: any) => {
 const postUpdateTables = async () => {
     const token = localStorage.getItem('jwtToken');
     const decodedToken = jwtDecode(token) as { id: number };
-    postLibraryCart(decodedToken.id);
-    updateUserIds(decodedToken.id);
+    await postLibraryCart(decodedToken.id);
+    await updateUserIds(decodedToken.id);
 };
 
-function postLibraryCart(userId: any) {
+async function postLibraryCart(userId: any) {
     const libraryUserDTO = {
         addedDate: Date.now,
         userID: userId
@@ -74,15 +76,15 @@ function postLibraryCart(userId: any) {
         total : 0,
         fechaCreacion : new Date().toISOString()
     };
-    useApiStore(pinia).fetchPostLibraryGameUser(libraryUserDTO);
-    useApiStore(pinia).fetchPostShoppingCart(cartUserDTO);
+  await  useApiStore(pinia).fetchPostLibraryGameUser(libraryUserDTO);
+  await  useApiStore(pinia).fetchPostShoppingCart(cartUserDTO);
 }
 
-function updateUserIds(userId: any) {
+async function updateUserIds(userId: any) {
     const objectIds = {
         libraryGameUserID: userId
     };
-    useApiStore(pinia).fetchUpdateUser(userId, objectIds);
+   await useApiStore(pinia).fetchUpdateUser(userId, objectIds);
 }
 
 const fetchGetUser = async (values: any) => {
