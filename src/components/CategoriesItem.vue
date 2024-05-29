@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, watch, defineEmits } from 'vue';
+
+// Definir el evento que emitirá este componente
+const emit = defineEmits(['categorySelected']);
 
 // Lista de categorías
 const categories = ref([]);
@@ -23,7 +26,13 @@ loadCategories();
 
 // Variable reactiva para la categoría seleccionada
 const selectedCategory = ref<string | null>(null);
+
+// Emitir el evento cada vez que se cambia la categoría seleccionada
+watch(selectedCategory, (newCategory) => {
+  emit('categorySelected', newCategory);
+});
 </script>
+
 <template>
     <v-container class="scrollable">
       <v-form>
@@ -42,6 +51,7 @@ const selectedCategory = ref<string | null>(null);
       </v-form>
     </v-container>
   </template>
+
   
 
   
@@ -51,7 +61,7 @@ const selectedCategory = ref<string | null>(null);
     font-size: 10px;
   }
   .scrollable{
-    height: 400px;
+    height: 600px;
     overflow-y: auto;
   }
   </style>

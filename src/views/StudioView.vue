@@ -1,21 +1,31 @@
 <script setup lang="ts">
-import StudioProfile from '@/components/StudioProfile.vue'
-import GameItem from '@/components/GameItem.vue'
-import CartItem from '@/components/CartItem.vue'
-import CategoriesItem from '@/components/CategoriesItem.vue'
+import { ref } from 'vue';
+import StudioProfile from '@/components/StudioProfile.vue';
+import CategoriesItem from '@/components/CategoriesItem.vue';
+import GamesListStudio from '@/components/GamesListStudio.vue';
+
+// Variable reactiva para la categoría seleccionada
+const selectedCategory = ref<string | null>(null);
+
+// Manejar el evento emitido por CategoriesItem
+const handleCategorySelected = (category: string | null) => {
+  selectedCategory.value = category;
+};
 </script>
+
 <template>
     <StudioProfile />
     <h1 class="title">Games</h1>
     <hr class="bar">
     <div class="cart-content">
-      <CartItem class="cart-item" />
+      <GamesListStudio class="cart-item" :selectedCategory="selectedCategory" />
       <div class="total-item">
-        <h4>Categories</h4>
-        <CategoriesItem />
+        <h4 class="categories-title">Categories</h4>
+        <CategoriesItem @categorySelected="handleCategorySelected" />
       </div>
     </div>
 </template>
+
 
 <style scoped>
 .title {
@@ -46,5 +56,8 @@ import CategoriesItem from '@/components/CategoriesItem.vue'
   margin-left: 20px;
   background-color: var(--color-blue);
   margin-bottom: 10px;
+}
+.categories-title {
+  margin-bottom: 20px;
 }
 </style>

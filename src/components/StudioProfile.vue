@@ -1,70 +1,23 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useApiStore, pinia } from '../store/api';
 
-// Definimos variables reactivas para almacenar los datos del estudio y el estado de edición
+// Definimos variables reactivas para almacenar los datos del estudio
 const studioData = ref(null);
-const isEditing = ref(false);
-const editedData = reactive({
-  name: '',
-  fundation: '',
-  country: '',
-  website: '',
-  emailContact: '',
-  emailLogin: '',
-  password: ''
-});
 
 onMounted(async () => {
   const studios = await useApiStore(pinia).fetchStudios();
   // TODO: obtener el email de login del estudio desde el localStorage
-  const emailLogin = 'studio1@gmail.com';
+  const emailLogin = 'bandainamco@gmail.com';
   const foundStudio = checkStudio(emailLogin, studios);
   if (foundStudio) {
     studioData.value = foundStudio;
-    //copia todas las propiedades de foundStudio al objeto editedData.
-    Object.assign(editedData, foundStudio);
-
-    
   }
 });
 
 function checkStudio(email: string, studios: any) {
   return studios.find((studio: any) => studio.emailLogin === email);
 }
-
-const enableEditing = () => {
-  isEditing.value = true;
-};
-
-const saveChanges = async () => {
-  const apiStore = useApiStore(pinia);
-
-  // Validar campos vacíos
-  if (!editedData.name.trim() || !editedData.country.trim() || !editedData.password.trim()) {
-    alert('Todos los campos deben estar llenos.');
-    return;
-  }
-   // Validación del correo electrónico
-   if (!editedData.emailLogin.endsWith('@gmail.com') || editedData.emailLogin.split('@')[0].trim() === '') {
-    editedData.emailLogin = `${editedData.name.toLowerCase()}@gmail.com`;
-  }
-  if (!editedData.emailContact.endsWith('@gmail.com') || editedData.emailContact.split('@')[0].trim() === '') {
-    editedData.emailContact = `${editedData.name.toLowerCase()}@gmail.com`;
-  }
-
-  // Crear un objeto plano con los datos editados
-  const studioPayload = { ...editedData };
-
-  // Eliminar las propiedades que quieres quitar
-  delete studioPayload.games;
-  delete studioPayload.studioID;
-  delete studioPayload.fundation;
-
-  await apiStore.fetchUpdateStudio(studioData.value.studioID, studioPayload);
-  studioData.value = { ...studioPayload };
-  isEditing.value = false;
-};
 
 </script>
 
@@ -75,52 +28,27 @@ const saveChanges = async () => {
             <div class="card-column">
                 <div class="card-username">
                     <p class="username-title">Name</p>
-                    <template v-if="isEditing">
-                        <input v-model="editedData.name" class="editable-input" />
-                    </template>
-                    <template v-else>
-                        <h2 class="username-subtitle">{{ studioData.name }}</h2>
-                    </template>
+                    <h2 class="username-subtitle">{{ studioData.name }}</h2>
                 </div>
                 <div class="card-name">
                     <p class="name-title">Website</p>
-                    <template v-if="isEditing">
-                        <input v-model="editedData.website" class="editable-input" />
-                    </template>
-                    <template v-else>
-                        <h2 class="name-subtitle">{{ studioData.website }}</h2>
-                    </template>
+                    <h2 class="name-subtitle">{{ studioData.website }}</h2>
                 </div>
             </div>
             <div class="card-column">
                 <div class="card-email">
                     <p class="email-title">Email-Contact</p>
-                    <template v-if="isEditing">
-                        <input v-model="editedData.emailContact" class="editable-input" />
-                    </template>
-                    <template v-else>
-                        <h2 class="email-subtitle">{{ studioData.emailContact }}</h2>
-                    </template>
+                    <h2 class="email-subtitle">{{ studioData.emailContact }}</h2>
                 </div>
                 <div class="card-name">
                     <p class="name-title">Country</p>
-                    <template v-if="isEditing">
-                        <input v-model="editedData.country" class="editable-input" />
-                    </template>
-                    <template v-else>
-                        <h2 class="name-subtitle">{{ studioData.country }}</h2>
-                    </template>
+                    <h2 class="name-subtitle">{{ studioData.country }}</h2>
                 </div>
             </div>
         </div>
-        <template v-if="isEditing">
-            <button class="card-button" @click="saveChanges">Confirm</button>
-        </template>
-        <template v-else>
-            <button class="card-button" @click="enableEditing">Edit Profile</button>
-        </template>
     </div>
 </template>
+
 
   
   
@@ -183,24 +111,6 @@ const saveChanges = async () => {
       margin: 0;
       color: var(--neutral-colors-white);
       font-family: var(--font-archivo-black);
-  }
-  
-  .card-button {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      background-color: var(--color-black);
-      color: var(--neutral-colors-white);
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      outline: none;
-      font-family: var(--font-roboto);
-  }
-  
-  .card-button:hover {
-      color: var(--color-blue);
   }
   
   .editable-input {
