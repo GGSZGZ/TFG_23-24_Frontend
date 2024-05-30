@@ -27,6 +27,8 @@ onMounted(async () => {
       editedData.email = userData.value.email;
       editedData.password = userData.value.password;
     }
+  }else{
+    alert('User not logged.')
   }
 });
 
@@ -121,18 +123,18 @@ const saveChanges = async () => {
 .card {
     position: relative;
     display: flex;
-    align-items: flex-start; /* Alinea los elementos a la parte superior */
+    align-items: flex-start;
     width: 80%;
     height: 250px;
     left: 10%;
     margin-top: 40px;
     background: linear-gradient(to right, var(--color-black), var(--color-dark-blue), var(--color-blue));
     border-radius: 20px;
-    overflow: hidden; /* Oculta el botón si se desborda de la tarjeta */
+    overflow: hidden;
 }
 
 .card-image {
-    width: 20%; /* Ajusta el ancho de la imagen según tu preferencia */
+    width: 20%;
     height: 60%;
     border-radius: 20px;
     margin-left: 3%;
@@ -141,15 +143,15 @@ const saveChanges = async () => {
 
 .card-content {
     display: flex;
-    flex-direction: row; /* Coloca los elementos en una fila */
+    flex-direction: row;
     justify-content: space-between;
     padding: 20px;
-    flex-grow: 1; /* Permite que el contenedor crezca para ocupar el espacio disponible */
+    flex-grow: 1;
 }
 
 .card-column {
     display: flex;
-    flex-direction: column; /* Coloca los elementos en una columna */
+    flex-direction: column;
     justify-content: space-between;
     margin-right: 20px;
 }
@@ -177,7 +179,7 @@ const saveChanges = async () => {
     bottom: 20px;
     right: 20px;
     background-color: var(--color-black);
-    color: var(--neutral-colors-white); /* Ajusta el color del texto del botón según tu preferencia */
+    color: var(--neutral-colors-white);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -190,14 +192,14 @@ const saveChanges = async () => {
 }
 
 .editable-input {
-  color: white; /* Cambia el color del texto a blanco */
-  background-color: transparent; /* Asegúrate de que el fondo sea transparente o el color que desees */
-  border: none; /* Quitar bordes si es necesario */
-  border-bottom: 1px solid white; /* Puedes añadir un borde inferior si lo deseas */
+  color: white;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid white;
   padding: 4px;
   font-size: var(--text-single-100-regular-size);
 }
 .editable-input:focus {
-  outline: none; /* Quitar outline al enfocar */
+  outline: none;
 }
 </style>

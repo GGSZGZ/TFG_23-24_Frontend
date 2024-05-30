@@ -1,73 +1,175 @@
+<script setup lang="ts">
+import { useApiStore, pinia } from '../store/api';
+import { ref, onMounted } from 'vue';
+import { jwtDecode } from 'jwt-decode'; 
+import { useRouter } from 'vue-router';
+
+const games = ref([]);
+const token = localStorage.getItem('jwtToken');
+
+if (!token || token === 'null') {
+  alert('Debes iniciar sesión como usuario para comprar un juego.');
+} else {
+  const decodedToken = jwtDecode(token) as { id: number };
+
+  const fetchGames = async () => {
+    try {
+      games.value = await useApiStore(pinia).fetchGamesLibraryGameUser(decodedToken.id);
+      const libraryUser=await useApiStore(pinia).fetchLibraryGameUser(decodedToken.id);
+      console.log(libraryUser);
+      
+    } catch (error) {
+      console.error('Error fetching games:', error);
+    }
+  };
+
+  onMounted(fetchGames);
+}
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const options = { month: 'short', day: 'numeric', year: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
+};
+
+const categories = (category: string) => {
+  return category.split(','); 
+}
+
+const router = useRouter();
+const handleClick = (item: any) => {  
+  router.push({ name: 'game', params: { id: item.gameID } });
+};
+</script>
+
 <template>
-    <div class="card">
-        <img src="/src/assets/cyber_site.jpg" alt="Descripción de la imagen" class="card-image">
+  <v-container class="cards-container" fluid>
+    <div v-if="games.length>0" class="cards">
+      <div class="card" v-for="game in games" :key="game.gameID" @click="handleClick(game)">
+        <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
         <div class="card-content">
-            <h2 class="card-title">Título</h2>
-            <p class="card-subtitle">Subtítulo</p>
+          <h2 class="card-title">{{ game.name }}</h2>
+          <div class="card-subtitle">
+            <span v-for="(category) in categories(game.categories)" :key="category" class="category">{{ category }}</span>
+          </div>
+          <div class="releaseDate">{{ formatDate(game.releaseDate) }}</div>
         </div>
-        <p class="last-session">Last Session: 10 APR</p>
-        <p class="hours-played">Hours Played: 400h</p>
+      </div>
     </div>
+    <div v-else>
+      <p>No hay juegos disponibles.</p>
+    </div>
+  </v-container>
 </template>
+
+
+
+
+
 <style scoped>
+.cards-container {
+  height: 600px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  margin-left: -10%;
+}
+
+
+.cards {
+  display: flex;
+  flex-direction: column;
+}
+
 .card {
-    position: relative;
-    display: flex;
-    align-items: flex-start; /* Alinea los elementos a la parte superior */
-    width: 700px;
-    height: 200px;
-    left: 5%;
-    margin-top:5%;
-    background-color: var(--color-black);
-    border-radius: 20px;
-    overflow: hidden; /* Oculta el botón si se desborda de la tarjeta */
-    margin-bottom: 20px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 800px;
+  height: 200px;
+  position: relative;
+  left: 10%;
+  background-color: var(--color-black);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: scale(1.03);
+  transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 .card-image {
-    width: 40%; /* Ajusta el ancho de la imagen según tu preferencia */
-    border-radius: 20px;
-    margin-left: 3%;
-    margin-top: 3%;
+  width: 40%;
+  height: 90%;
+  border-radius: 20px;
+  margin-left: 2%;
 }
 
 .card-content {
-    flex-grow: 1; /* Para que ocupe el espacio restante */
-    padding: 20px; /* Ajusta según tu preferencia */
+  flex-grow: 1;
+  padding: 20px;
 }
 
 .card-title {
-    margin-bottom: 5px; /* Ajusta según tu preferencia */
-    color: var(--neutral-colors-white); /* Ajusta el color del texto según tu preferencia */
-    font-family: var(--font-archivo-black);
-    margin-top: 0; /* Elimina el margen superior del título */
+  bottom: 25px;
+  right: 2%;
+  position: relative;
+  color: var(--neutral-colors-white);
+  font-family: var(--font-archivo-black);
 }
 
-.card-subtitle {
-    margin-bottom: 10px; /* Ajusta según tu preferencia */
-    font-size: 14px; /* Ajusta el tamaño del texto según tu preferencia */
-    color: var(--neutral-colors-white); /* Ajusta el color del texto según tu preferencia */
-    font-family: var(--font-orbitron);
-    padding: 10px;
-    width: min-content;
-    background-color: var(--color-dark-blue);
-    box-shadow: 5px 5px 10px 0 var(--color-blue); 
+.card-price {
+  font-size: var(--text-smallest-regular-size);
+  color: var(--neutral-colors-white);
+  background-color: var(--color-dark-blue);
+  font-family: var(--font-orbitron);
+  box-shadow: 3px 3px 4px 0 var(--color-blue);
+  padding: 10px;
+  width: min-content;
+  position: relative;
+  top: 10px;
+  right: 2%;
 }
 
-.last-session {
-    position: absolute; /* Posiciona el texto absolutamente */
-    bottom: 10px; /* Ajusta la distancia desde la parte inferior */
-    right: 20px; /* Ajusta la distancia desde la derecha */
-    color: var(--color-gray); /* Ajusta el color del texto según tu preferencia */
-    font-family: var(--font-roboto);
-    padding: 10px;
+.card-subtitle,
+.releaseDate { 
+  position: relative;
+  bottom: 20px;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  color: var(--neutral-colors-white);
+  font-family: var(--font-orbitron);
+  padding: 10px;
+  width: auto;
+  white-space: normal;
+  max-width: 520px;
 }
-.hours-played {
-    position: absolute; /* Posiciona el texto absolutamente */
-    bottom: 10px; /* Ajusta la distancia desde la parte inferior */
-    left: 310px;
-    color: var(--color-gray); /* Ajusta el color del texto según tu preferencia */
-    font-family: var(--font-roboto);
-    padding: 10px;
+
+.releaseDate {
+  font-family: var(--font-orbitron) sans-serif;
+  font-weight: 200;
+  right: 3%;
+}
+
+.card-subtitle{
+    max-width: 520px;
+    gap: 10px;
+}
+
+
+.category {
+  margin-right: 10px;
+  top: 5%;
+  position: relative;
+  left: -15px;
+  background-color: var(--color-dark-blue);
+  color: var(--neutral-colors-white);
+  padding: 0px 5px;
+  box-shadow: 3px 3px 4px 0 var(--color-blue);
+  white-space: nowrap;
 }
 </style>

@@ -7,7 +7,7 @@ import Comments from '../components/ProfileComments.vue';
     <ProfileItem />
     <div class="container">
         <div class="left-section">
-            <h1>Last Bought Games</h1>
+            <h1>Bought Games</h1>
             <hr class="line" />
             <ProfileGames />
         </div>

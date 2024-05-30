@@ -30,7 +30,7 @@ const addToCart =async () => {
    const gamesUser= await useApiStore(pinia).fetchGamesLibraryGameUser(decodedToken.id);
    let exist=false;
    
-   if(gamesUser.status!=='Games not found'==false){
+   if(gamesUser.status!=='No Games'==false){
    gamesUser.forEach((libraryGame:any) => {
       if(libraryGame.gameID==game.value!.gameID) {
         alert('Error, cannot buy same game twice');
