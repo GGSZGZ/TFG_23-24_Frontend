@@ -95,7 +95,6 @@ strong {
   justify-content: center;
   align-items: flex-start;
   min-height: 80vh;
-  background-color: #002d2d;
 }
 
 .container-images {

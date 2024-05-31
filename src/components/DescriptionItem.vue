@@ -32,10 +32,11 @@ onMounted(async () => {
     padding: 20px;
     margin: 10px 0;
     font-family: var(--font-archivo-black);
+    color: var(--neutral-colors-white);
   }
   hr {
     width: 100%;
-    border-color: #000;
+    border-color: var(--neutral-colors-white);
     margin-top: 10px;
     margin-bottom: 10px;
   }

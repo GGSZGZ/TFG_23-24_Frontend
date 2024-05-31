@@ -72,13 +72,14 @@ const navigateToGame = (id: any) => {
 .cards-container {
   height: 900px;
   overflow-y: auto;
-  scrollbar-width: none; /* Scroll invisible */
 }
 
 
 .cards {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .card {
@@ -89,7 +90,6 @@ const navigateToGame = (id: any) => {
   width: 900px;
   height: 200px;
   position: relative;
-  left: 25%;
   background-color: var(--color-black);
   border-radius: 20px;
   overflow: hidden;
@@ -113,8 +113,8 @@ const navigateToGame = (id: any) => {
 }
 
 .card-title {
-  bottom: 25px;
-  right: 2%;
+  bottom: 15px;
+  right: 5px;
   position: relative;
   color: var(--neutral-colors-white);
   font-family: var(--font-archivo-black);
@@ -129,7 +129,7 @@ const navigateToGame = (id: any) => {
   padding: 10px;
   width: min-content;
   position: relative;
-  top: 10px;
+  margin-bottom: 10px;
   right: 2%;
 }
 
@@ -144,7 +144,7 @@ const navigateToGame = (id: any) => {
   padding: 5px;
   width: min-content;
   position: relative;
-  top: 10px;
+  margin-bottom: 10px;
   right: 2%;
 }
 
@@ -172,19 +172,25 @@ const navigateToGame = (id: any) => {
 .releaseDate { 
   position: relative;
   bottom: 20px;
-  height: 40px;
+  height: auto; /* Cambia de 40px a auto para permitir que el contenedor crezca en altura */
   display: flex;
+  flex-wrap: wrap;
   color: var(--neutral-colors-white);
   font-family: var(--font-orbitron);
   padding: 10px;
-  width: min-content;
-  white-space: nowrap;
+  width: auto;
+  white-space: normal;
+  max-width: 520px;
 }
 
 .releaseDate {
   font-family: var(--font-orbitron) sans-serif;
   font-weight: 200;
   right: 3%;
+}
+.card-subtitle{
+  max-width: 520px;
+  gap: 10px;
 }
 
 .card-button {

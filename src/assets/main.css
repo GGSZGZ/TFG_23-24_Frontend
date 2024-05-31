@@ -10,6 +10,10 @@ body {
   inset: 0;
 }
 
+#app{
+  background-color: var(--color-dark-blue);
+}
+
 :root {
   /* fonts */
   --font-archivo-black: 'Archivo Black', sans-serif;

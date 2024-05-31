@@ -11,6 +11,7 @@ import PaymentView from '@/views/PaymentView.vue'
 import StudioView from '@/views/StudioView.vue'
 import StudioRegisterView from '@/views/StudioRegisterView.vue'
 import LibraryView from '@/views/LibraryView.vue'
+import AboutUsView from '@/views/AboutUsView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -68,6 +69,11 @@ const router = createRouter({
       path: '/library',
       name: 'library',
       component: LibraryView
+    },
+    {
+      path: '/aboutUs',
+      name: 'aboutUs',
+      component: AboutUsView
     },
   ]
 })

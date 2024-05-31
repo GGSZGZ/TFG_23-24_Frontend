@@ -85,25 +85,31 @@ const navigateToGame = (gameID: any) => {
 }
 h2 {
   font-family: var(--font-archivo-black);
+  color:  var(--neutral-colors-white);
 }
 hr {
   width: 100%;
-  border-color: #000;
+  border-color:  var(--neutral-colors-white);
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
 .game-container {
+  width: auto;
   display: flex;
   justify-content: left; /* Alinear los elementos a la izquierda */
   gap: 15px;
+  overflow-x: visible;
+  overflow-y: hidden;
+  padding: 20px;
 }
 
 .game {
+  width: 400px;
   padding: 10px;
-  width: 15%;
   background-color: var(--color-black);
   border-radius: 10px;
+  min-width: 300px;
 }
 .game:hover {
   transform: scale(1.1);

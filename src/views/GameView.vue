@@ -25,9 +25,10 @@ import GameComments from '@/components/GameComments.vue'
 <style scoped>
 
 hr {
-    width: 80%;
-    border-color: #000;
-    margin-left: 10%;
+    width: 90%;
+    border-color: var(--neutral-colors-white);
+    margin-left: 5%;
+    margin-top: 20px;
 }
 
 .secondary-content {

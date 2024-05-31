@@ -148,8 +148,8 @@ const handleClick = (item: any) => {
 }
 
 .card-subtitle{
-    max-width: 520px;
-    gap: 10px;
+  max-width: 520px;
+  gap: 10px;
 }
 
 
