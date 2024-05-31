@@ -11,9 +11,9 @@ import OrderByItem from '@/components/OrderByItem.vue';
 import { ref } from 'vue';
 
 // Variable reactiva para la categoría seleccionada
-const selectedValues = ref<[] | null>(null);
+const selectedValues = ref<string | null>("None");
 const selectedOrder = ref<string | null>(null);
-const selectedStudio = ref<string | null>(null);
+  const selectedStudio = ref<string | null>('None');
 const maxPrice = ref<number | null>(null);
 
 // Manejar el evento emitido por CategoriesItem

@@ -61,7 +61,7 @@ const router = createRouter({
       component: PaymentView
     },
     {
-      path: '/studio',
+      path: '/studio/:id',
       name: 'studio',
       component: StudioView
     },

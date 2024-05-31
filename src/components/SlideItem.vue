@@ -2,18 +2,33 @@
 import { ref, watch } from 'vue';
 
 const min = 0;
-const max = 200;
+const max = 150;
 const slider = ref(0);
+const roundedSliderValue = ref(0);
 
 const emit = defineEmits(['priceChanged']);
 
 const handleTextFieldBlur = () => {
-  slider.value = Math.round(slider.value);
+  let newValue = Math.round(slider.value);
+  if (newValue < min) {
+    newValue = min;
+  } else if (newValue > max) {
+    newValue = max;
+  }
+  slider.value = newValue;
+  roundedSliderValue.value = newValue;
   emit('priceChanged', slider.value);
 };
 
+const updateSliderFromTextField = () => {
+  if (roundedSliderValue.value >= min && roundedSliderValue.value <= max) {
+    slider.value = roundedSliderValue.value;
+  }
+};
+
 watch(slider, (newPrice) => {
-  emit('priceChanged', newPrice);
+  roundedSliderValue.value = Math.round(newPrice);
+  emit('priceChanged', roundedSliderValue.value);
 });
 </script>
 
@@ -29,17 +44,20 @@ watch(slider, (newPrice) => {
   >
     <template v-slot:append>
       <v-text-field
-        v-model="slider"
+        v-model="roundedSliderValue"
         density="compact"
         style="width: 80px"
         type="number"
         hide-details
         single-line
         @blur="handleTextFieldBlur"
+        @input="updateSliderFromTextField"
       ></v-text-field>
+      <v-icon class="ml-2">mdi-currency-eur</v-icon>
     </template>
   </v-slider>
 </template>
+
 
 <style scoped>
 label {

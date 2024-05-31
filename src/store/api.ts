@@ -755,31 +755,44 @@ export const useApiStore = defineStore('flashgaminghub', {
         throw error
       }
     },
-    async fetchGamesGameShop(id: number, category?: string, price?: any, orderDate?: string, orderPrice?: string, orderName?: string) {
+    async fetchGamesGameShop(id: number, category?: string, price?: number, orderDate?: string, orderPrice?: string, orderName?: string) {
       try {
-        let url = `https://localhost:7025/GameShop/${id}/games`
-        if(category !== undefined){
-          url += `?category=${category}`
-        } else if (price !== undefined){
-          url += `?price=${price}`
-        } else if (orderDate !== undefined){
-          url+= `?orderDate=${orderDate}`
-        } else if (orderPrice !== undefined){
-          url+= `?orderPrice=${orderPrice}`
-        } else if (orderName !== undefined){
-          url+= `?orderName=${orderName}`
+        let url = `https://localhost:7025/GameShop/${id}/games`;
+        const params = new URLSearchParams();
+    
+        if (category !== undefined) {
+          params.append('category', category);
         }
-
+        if (price !== undefined) {
+          params.append('price', price.toString());
+        }
+        if (orderDate !== undefined) {
+          params.append('orderDate', orderDate);
+        }
+        if (orderPrice !== undefined) {
+          params.append('orderPrice', orderPrice);
+        }
+        if (orderName !== undefined) {
+          params.append('orderName', orderName);
+        }
+    
+        if (params.toString()) {
+          url += `?${params.toString()}`;
+        }
+       
+        console.log(url);
+        
+    
         const response = await fetch(url);
         if (!response.ok) {
-          throw new Error('Error al obtener los datos')
+          throw new Error('Error al obtener los datos');
         }
-        return await response.json()
+        return await response.json();
       } catch (error: any) {
-        console.error('Error al obtener los datos:', error.message)
-        throw error
+        console.error(error.message);
       }
     },
+    
     async fetchPostGameShop(gameShopData:any) {
       try {
         if (!this.token) {

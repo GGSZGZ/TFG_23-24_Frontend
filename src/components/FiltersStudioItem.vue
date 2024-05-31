@@ -3,12 +3,13 @@ import { pinia, useApiStore } from '@/store/api';
 import { onMounted, ref, watch } from 'vue';
 
 const studios = ref([]);
-const selectedStudio = ref<string | null>(null);
+const selectedStudio = ref<string | null>('None');
 
 const emit = defineEmits(['studioChanged']);
 
 onMounted(async () => {
   studios.value = await useApiStore(pinia).fetchStudios();
+  studios.value.unshift({ name: 'None', studioID: 'None' });
 });
 
 watch(selectedStudio, (newStudio) => {
@@ -34,6 +35,7 @@ watch(selectedStudio, (newStudio) => {
     </v-form>
   </v-container>
 </template>
+
 
 <style scoped>
 .v-radio {

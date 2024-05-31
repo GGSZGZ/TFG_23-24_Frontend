@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, defineEmits } from 'vue';
+import { ref, watch, defineEmits } from 'vue';
 
 // Definir el evento que emitirá este componente
 const emit = defineEmits(['categorySelected']);
 
 // Lista de categorías
-const categories = ref([]);
+const categories = ref<string[]>([]);
 
 async function loadCategories() {
     try {
@@ -17,15 +17,16 @@ async function loadCategories() {
         categories.value = data;
     } catch (error) {
         console.error(error);
-    } finally{
-        categories.value.unshift("Ninguna");
+    } finally {
+        categories.value.unshift("None");
+        selectedCategory.value = "None"; // Seleccionar "Ninguna" por defecto
     }
 }
 
 loadCategories();
 
 // Variable reactiva para la categoría seleccionada
-const selectedCategory = ref<string | null>(null);
+const selectedCategory = ref<string | null>("None"); // "Ninguna" seleccionada por defecto
 
 // Emitir el evento cada vez que se cambia la categoría seleccionada
 watch(selectedCategory, (newCategory) => {
@@ -49,7 +50,9 @@ watch(selectedCategory, (newCategory) => {
         </v-radio-group>
       </v-form>
     </v-container>
-  </template>
+</template>
+
+
 
   
 
