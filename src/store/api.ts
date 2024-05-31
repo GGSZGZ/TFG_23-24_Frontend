@@ -127,7 +127,6 @@ export const useApiStore = defineStore('flashgaminghub', {
           }
         })
         if (response.status === 404) {
-          console.log('No se han encontrado mensajes de este usuario');
           return [];
         }
         if (!response.ok) {
@@ -779,8 +778,6 @@ export const useApiStore = defineStore('flashgaminghub', {
         if (params.toString()) {
           url += `?${params.toString()}`;
         }
-       
-        console.log(url);
         
     
         const response = await fetch(url);

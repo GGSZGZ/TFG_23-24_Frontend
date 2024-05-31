@@ -12,7 +12,6 @@ watchEffect(() => {
   formattedFinalPrice.value = props.finalPrice.toFixed(2);
 });
 async function navigateToPayment() {
-  // console.log(formattedFinalPrice.value);
   // almacenar precio si se quiere hacer algo con el luego
   if(formattedFinalPrice.value!=='0.00'){
   router.push({ name: 'payment'});

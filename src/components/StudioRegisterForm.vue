@@ -40,7 +40,6 @@ const fetchPostUser = async (values: any) => {
       // Espera a que se complete la búsqueda del nuevo estudio
       const newStudio = await proveExistingStudio(values.email, true);
       
-      console.log(newStudio);
       const studioJSON = JSON.stringify(newStudio);
       localStorage.setItem('studioLogged', studioJSON);
       alert('El estudio se ha logeado correctamente');
