@@ -365,10 +365,6 @@ export const useApiStore = defineStore('flashgaminghub', {
     
     async fetchPostShoppingCart(shoppingCartData:any) {
       try {
-        if (!this.token) {
-          console.error('No se encontró ningún token JWT en el localStorage');
-          return;
-        }
         
         const url = 'https://localhost:7025/ShoppingCart';
     
@@ -376,7 +372,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.token}`
+            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
           },
           body: JSON.stringify(shoppingCartData)
         });
@@ -596,16 +592,11 @@ export const useApiStore = defineStore('flashgaminghub', {
         }
         return await response.json()
       } catch (error: any) {
-        console.error('Error al obtener los datos:', error.message)
-        throw error
+        return('No Games');
       }
     },
     async fetchPostLibraryGameUser(libraryGameUserData:any) {
       try {
-        if (!this.token) {
-          console.error('No se encontró ningún token JWT en el localStorage');
-          return;
-        }
         
         const url = 'https://localhost:7025/LibraryGameUser';
     
@@ -613,7 +604,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.token}`
+            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
           },
           body: JSON.stringify(libraryGameUserData)
         });
@@ -766,11 +757,6 @@ export const useApiStore = defineStore('flashgaminghub', {
     },
     async fetchGamesGameShop(id: number) {
       try {
-
-        if (!this.token) {
-          console.error('No se encontró ningún token JWT en el localStorage')
-          return
-        }
 
         const response = await fetch(`https://localhost:7025/GameShop/${id}/games`, {
           headers: {

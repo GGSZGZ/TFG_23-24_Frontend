@@ -6,7 +6,9 @@ const games = ref([]);
 const loading = ref(true);
 
 onMounted(async () => {
-  games.value = await useApiStore(pinia).fetchGamesGameShop(1);
+  const response = await useApiStore(pinia).fetchGamesGameShop(1);
+  console.log("API REPONSE: "+response)
+  games.value = response;
   loading.value = false;
 });
 </script>
@@ -33,7 +35,7 @@ onMounted(async () => {
       >
         <div class="carousel-content">
           <h3 class="carousel-title">{{ game.name }}</h3>
-          <p class="carousel-description">{{ game.description }}</p>
+          <p class="carousel-description">{{ game.synopsis }}</p>
           <p class="carousel-price">PRICE: {{ game.price }}€</p>
         </div>
       </v-sheet>
@@ -70,7 +72,7 @@ onMounted(async () => {
 .carousel-title {
   font-size: var(--font-size-25xl);
   font-family: var(--font-archivo-black);
-  margin-bottom: 12%;
+  margin-bottom: 14%;
   margin-left: 5%;
 }
 
@@ -78,7 +80,7 @@ onMounted(async () => {
   font-size: var(--text-single-200-regular-size);
   font-family: var(--font-roboto);
   position: absolute; 
-  top: 45%;
+  top: 40%;
   margin-left: 5%;
   width: 30%; 
 }
