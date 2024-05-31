@@ -755,14 +755,22 @@ export const useApiStore = defineStore('flashgaminghub', {
         throw error
       }
     },
-    async fetchGamesGameShop(id: number) {
+    async fetchGamesGameShop(id: number, category?: string, price?: any, orderDate?: string, orderPrice?: string, orderName?: string) {
       try {
+        let url = `https://localhost:7025/GameShop/${id}/games`
+        if(category !== undefined){
+          url += `?category=${category}`
+        } else if (price !== undefined){
+          url += `?price=${price}`
+        } else if (orderDate !== undefined){
+          url+= `?orderDate=${orderDate}`
+        } else if (orderPrice !== undefined){
+          url+= `?orderPrice=${orderPrice}`
+        } else if (orderName !== undefined){
+          url+= `?orderName=${orderName}`
+        }
 
-        const response = await fetch(`https://localhost:7025/GameShop/${id}/games`, {
-          headers: {
-            Authorization: `Bearer ${this.token}`
-          }
-        })
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error('Error al obtener los datos')
         }

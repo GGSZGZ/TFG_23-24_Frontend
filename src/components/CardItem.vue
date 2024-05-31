@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { useApiStore, pinia } from '../store/api';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+
+const props = defineProps<{
+  selectedValues: [] | null
+}>()
 
 const games = ref([]);
 
@@ -37,6 +41,10 @@ const router = useRouter();
 const navigateToGame = (id: any) => {
   router.push({ name: 'game', params: { id: id } });
 };
+
+const filteredGames = computed(async() => {
+    games.value = await useApiStore(pinia).fetchGamesGameShop(1, );
+});
 </script>
 
 <template>

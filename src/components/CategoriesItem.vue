@@ -36,13 +36,12 @@ watch(selectedCategory, (newCategory) => {
 <template>
     <v-container class="scrollable">
       <v-form>
-        <v-radio-group v-model="selectedCategory">
+        <v-radio-group v-model="selectedCategory" color="yellow">
           <v-row>
             <v-col v-for="(category, index) in categories" :key="index" cols="6">
               <v-radio
                 :label="category"
                 :value="category"
-                color="yellow"
                 class="options"
               ></v-radio>
             </v-col>
@@ -61,7 +60,7 @@ watch(selectedCategory, (newCategory) => {
     font-size: 10px;
   }
   .scrollable{
-    height: 600px;
+    height: 400px;
     overflow-y: auto;
   }
   </style>
