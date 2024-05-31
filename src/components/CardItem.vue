@@ -1,37 +1,115 @@
 <script setup lang="ts">
 import { useApiStore, pinia } from '../store/api';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-const games = ref([]);
+const props = defineProps<{
+  selectedValues: string | null;
+  selectedOrder: string | null;
+  selectedStudio: string | null;
+  maxPrice: number | null;
+}>();
 
-const formatDate = (dateString : string) => {
+const games = ref([]);
+const filteredGames = ref([]);
+
+const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   const options = { month: 'short', day: 'numeric', year: 'numeric' };
   return date.toLocaleDateString('en-US', options);
 };
 
 const categories = (category: string) => {
-  return category.split(','); 
-}
+  return category.split(',').map(c => c.trim());
+};
 
-onMounted(async () => {
-  games.value = await useApiStore(pinia).fetchGamesGameShop(1);
-  if (games.value.length > 0) {
-    games.value.forEach(game => {
-      if (game.discount > 0) {
-        game.finalPrice = calculateDiscountedPrice(game.price, game.discount);
-      } else {
-        game.finalPrice = game.price;
-      }
-    });
-  }
-});
-
-const calculateDiscountedPrice = (price, discount) => {
+const calculateDiscountedPrice = (price: number, discount: number) => {
   return (price - (price * (discount / 100))).toFixed(2);
 };
 
+const fetchGames = async (category: string | null) => {
+  const apiStore = useApiStore(pinia);
+  const maxPrice = props.maxPrice !== null ? props.maxPrice : undefined;
+
+  let orderDate: string | undefined;
+  let orderPrice: string | undefined;
+  let orderName: string | undefined;
+
+  switch (props.selectedOrder) {
+    case 'Price (Low to High)':
+      orderPrice = 'asc';
+      break;
+    case 'Price (High to Low)':
+      orderPrice = 'desc';
+      break;
+    case 'Date (Close to Further)':
+      orderDate = 'asc';
+      break;
+    case 'Date (Further to Close)':
+      orderDate = 'desc';
+      break;
+    case 'Name (A-Z)':
+      orderName = 'asc';
+      break;
+    case 'Name (Z-A)':
+      orderName = 'desc';
+      break;
+    default:
+      break;
+  }
+
+  if (category === 'None') {
+    category = undefined;
+  }
+
+  try {
+    games.value = await apiStore.fetchGamesGameShop(1, category, maxPrice, orderDate, orderPrice, orderName);
+
+    if (games.value.length > 0) {
+      games.value.forEach(game => {
+        game.finalPrice = game.discount > 0
+          ? calculateDiscountedPrice(game.price, game.discount)
+          : game.price;
+      });
+    }
+    filterGames();
+  } catch (error) {
+    games.value = [];
+    filteredGames.value = [];
+  }
+};
+
+const filterGames = () => {
+  if (props.selectedStudio !== "None") {
+    filteredGames.value = games.value.filter(game => {
+      const matchesStudio = game.studioID === props.selectedStudio;
+      return matchesStudio;
+    });
+  } else {
+    filteredGames.value = games.value;
+  }
+};
+
+
+onMounted(() => {
+  fetchGames(props.selectedValues);
+});
+
+watch(() => props.selectedValues, (newCategory) => {
+  fetchGames(newCategory);
+});
+
+watch(() => props.selectedStudio, () => {
+  filterGames();
+});
+
+watch(() => props.maxPrice, () => {
+  fetchGames(props.selectedValues);
+});
+
+watch(() => props.selectedOrder, () => {
+  fetchGames(props.selectedValues);
+});
 const router = useRouter();
 
 const navigateToGame = (id: any) => {
@@ -42,33 +120,41 @@ const navigateToGame = (id: any) => {
 <template>
   <v-container class="cards-container" fluid>
     <div class="cards">
-      <div class="card" v-for="game in games" :key="game.gameID"  @click="navigateToGame(game.gameID)">
-        <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
-        <div class="card-content">
-          <h2 class="card-title">{{ game.name }}</h2>
-          
-          <div class="card-subtitle">
-            <span v-for="(category) in categories(game.categories)" :key="category" class="category">{{ category }}</span>
+      <div v-if="filteredGames.length === 0" class="no-games">
+        Games not found
+      </div>
+      <div v-else>
+        <div class="card" v-for="game in filteredGames" :key="game.gameID" @click="navigateToGame(game.gameID)">
+          <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
+          <div class="card-content">
+            <h2 class="card-title">{{ game.name }}</h2>
+            <div class="card-subtitle">
+              <span v-for="(category) in categories(game.categories)" :key="category" class="category">{{ category }}</span>
+            </div>
+            <div class="releaseDate">{{ formatDate(game.releaseDate) }}</div>
+            <div v-if="game.discount > 0" class="discounted-price">
+              <span class="discount">-{{ game.discount }}%</span>
+              <span class="original-price">{{ game.price }}€</span>
+              <span class="current-price">{{ game.finalPrice }}€</span>
+            </div>
+            <p v-else class="card-price">{{ game.price }}€</p>
           </div>
-
-          <div class="releaseDate">{{ formatDate(game.releaseDate) }}</div>
-
-          <div v-if="game.discount > 0" class="discounted-price">
-            <span class="discount">-{{ game.discount }}%</span>
-            <span class="original-price">{{ game.price }}€</span>
-            <span class="current-price">{{ game.finalPrice }}€</span>
-          </div>
-          <p v-else class="card-price">{{ game.price }}€</p>
+          <button class="card-button">Add To Cart</button>
         </div>
-        <button class="card-button">Add To Cart</button>
       </div>
     </div>
   </v-container>
 </template>
 
-
-
 <style scoped>
+.no-games {
+  text-align: center;
+  font-size: 1.5em;
+  margin-top: 2em;
+  color: #888;
+}
+
+
 .cards-container {
   height: 900px;
   overflow-y: auto;

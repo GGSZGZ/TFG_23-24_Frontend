@@ -1,23 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useApiStore, pinia } from '../store/api';
+import { useRouter } from 'vue-router';
 
 // Definimos variables reactivas para almacenar los datos del estudio
 const studioData = ref(null);
+const router = useRouter();
 
 onMounted(async () => {
-  const studios = await useApiStore(pinia).fetchStudios();
-  // TODO: obtener el email de login del estudio desde el localStorage
-  const emailLogin = 'bandainamco@gmail.com';
-  const foundStudio = checkStudio(emailLogin, studios);
-  if (foundStudio) {
-    studioData.value = foundStudio;
+const studioID = Number(router.currentRoute.value.params.id);
+  const studioFetch = await useApiStore(pinia).fetchStudio(studioID);
+  
+  if (studioData) {
+    studioData.value = studioFetch;
   }
 });
-
-function checkStudio(email: string, studios: any) {
-  return studios.find((studio: any) => studio.emailLogin === email);
-}
 
 </script>
 

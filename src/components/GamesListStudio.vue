@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useApiStore, pinia } from '../store/api';
 import { useRouter } from 'vue-router';
 import { defineProps } from 'vue';
@@ -21,8 +21,8 @@ const categories = (category: string) => {
 }
 
 onMounted(async () => {
-    //CHANGE ID FOR THE ONE I RECEIVE
-    const fetchGames = await useApiStore(pinia).fetchGamesStudio(4);
+    const studioID = Number(router.currentRoute.value.params.id);
+    const fetchGames = await useApiStore(pinia).fetchGamesStudio(studioID);
     games.value = fetchGames;
 });
 
@@ -42,7 +42,7 @@ const navigateToGame = (id: any) => {
 
 // Filtrar juegos por categoría seleccionada
 const filteredGames = computed(() => {
-  if (!props.selectedCategory || props.selectedCategory === "Ninguna") {
+  if (!props.selectedCategory || props.selectedCategory === "None") {
     return games.value;
   }
   return games.value.filter(game => game.categories.includes(props.selectedCategory));

@@ -7,7 +7,6 @@ const loading = ref(true);
 
 onMounted(async () => {
   const response = await useApiStore(pinia).fetchGamesGameShop(1);
-  console.log("API REPONSE: "+response)
   games.value = response;
   loading.value = false;
 });

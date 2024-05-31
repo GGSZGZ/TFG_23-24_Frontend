@@ -16,7 +16,6 @@ if (!token || token === 'null') {
     try {
       games.value = await useApiStore(pinia).fetchGamesLibraryGameUser(decodedToken.id);
       const libraryUser=await useApiStore(pinia).fetchLibraryGameUser(decodedToken.id);
-      console.log(libraryUser);
       
     } catch (error) {
       console.error('Error fetching games:', error);

@@ -28,7 +28,6 @@ const fetch = async () => {
             ...games.value.map(game => ({ id: game.id, name: game.name, type: 'Game' })),
             ...studios.value.map(studio => ({ id: studio.id, name: studio.name, type: 'Studio' })),
         ];
-        console.log(studios.value);
     }
 }
 
@@ -85,10 +84,6 @@ const handleSearchClick = (search: SearchItem) => {
         });
     }
 };
-
-console.log(searchs.value.forEach(element => {
-    element.id, element.name, element.type
-}));
 </script>
 
 <template>

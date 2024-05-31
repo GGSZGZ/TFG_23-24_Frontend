@@ -320,8 +320,13 @@ onMounted(async () => {
   width: 120%;
 }
 
-.grid-item:hover, .principal:hover {
+.grid-item:hover {
   transform: scale(1.1);
+  cursor: pointer;
+}
+.principal:hover{
+  transform: scale(1.03);
+  transition: transform 0.3s ease;
   cursor: pointer;
 }
 

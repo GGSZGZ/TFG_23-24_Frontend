@@ -127,7 +127,6 @@ export const useApiStore = defineStore('flashgaminghub', {
           }
         })
         if (response.status === 404) {
-          console.log('No se han encontrado mensajes de este usuario');
           return [];
         }
         if (!response.ok) {
@@ -755,23 +754,42 @@ export const useApiStore = defineStore('flashgaminghub', {
         throw error
       }
     },
-    async fetchGamesGameShop(id: number) {
+    async fetchGamesGameShop(id: number, category?: string, price?: number, orderDate?: string, orderPrice?: string, orderName?: string) {
       try {
-
-        const response = await fetch(`https://localhost:7025/GameShop/${id}/games`, {
-          headers: {
-            Authorization: `Bearer ${this.token}`
-          }
-        })
-        if (!response.ok) {
-          throw new Error('Error al obtener los datos')
+        let url = `https://localhost:7025/GameShop/${id}/games`;
+        const params = new URLSearchParams();
+    
+        if (category !== undefined) {
+          params.append('category', category);
         }
-        return await response.json()
+        if (price !== undefined) {
+          params.append('price', price.toString());
+        }
+        if (orderDate !== undefined) {
+          params.append('orderDate', orderDate);
+        }
+        if (orderPrice !== undefined) {
+          params.append('orderPrice', orderPrice);
+        }
+        if (orderName !== undefined) {
+          params.append('orderName', orderName);
+        }
+    
+        if (params.toString()) {
+          url += `?${params.toString()}`;
+        }
+        
+    
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos');
+        }
+        return await response.json();
       } catch (error: any) {
-        console.error('Error al obtener los datos:', error.message)
-        throw error
+        console.error(error.message);
       }
     },
+    
     async fetchPostGameShop(gameShopData:any) {
       try {
         if (!this.token) {
