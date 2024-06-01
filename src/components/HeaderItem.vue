@@ -32,26 +32,11 @@ if (studio.value && studio.value !== 'null') {
   }
 }
 
-// Verificar los cambios en el valor de `studio`
-watch(studio, (newValue) => {
-  if (newValue && newValue !== 'null') {
-    try {
-      studioData.value = JSON.parse(newValue);
-    } catch (error) {
-      console.error('Error parsing studio data:', error);
-      studio.value = null; // Restablecer el estudio si es inválido
-    }
-  }
-});
-
 // Computed properties para determinar el estado de inicio de sesión
 const isUserLoggedIn = computed(() => decodedToken?.role === 'user' && !studioData.value);
 const isAdminLoggedIn = computed(() => decodedToken?.role === 'admin' && !studioData.value);
 const isStudioLoggedIn = computed(() => !decodedToken && studioData.value);
 const isGuest = computed(() => !decodedToken && !studioData.value);
-
-// Computed para obtener el id del estudio
-const studioId = computed(() => studioData.value?.studioID || '');
 
 // Imprimir información de depuración
 console.log(decodedToken?.role + ', ' + (studioData.value ? studioData.value.studioID : 'No Studio Data'));
@@ -99,7 +84,7 @@ console.log(decodedToken?.role + ', ' + (studioData.value ? studioData.value.stu
         </RouterLink>
         <RouterLink
           v-else-if="isStudioLoggedIn"
-          :to="`/studio/${studioId}`"
+          to="/studio/studio&admin"
           style="text-decoration: none; color: var(--neutral-colors-headings-black);"
         >
           Studio

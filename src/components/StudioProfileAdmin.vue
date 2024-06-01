@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue';
 import { useApiStore, pinia } from '../store/api';
+import { useRouter } from 'vue-router';
 
 const studioData = ref(null);
 const isEditing = ref(false);
@@ -57,6 +58,31 @@ const saveChanges = async () => {
   }
 };
 
+//Home
+const router = useRouter();
+  const navigateToHome = async() => {
+      router.push({ name: 'store' });
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
+  };
+const logOut = () =>{
+    
+    if(localStorage.getItem('jwtToken')!=JSON.stringify(null)){
+      localStorage.setItem('user', JSON.stringify(null));
+      localStorage.setItem('jwtToken', JSON.stringify(null));
+      localStorage.setItem('messageLiked','');
+      alert('Se ha cerrado sesión');
+      navigateToHome();
+    }else if(localStorage.getItem('studioLogged')!=JSON.stringify(null)){
+      localStorage.setItem('studioLogged', JSON.stringify(null));
+      alert('Se ha cerrado sesión');
+      navigateToHome();
+    }else{
+      alert('Todavía no se ha logueado');
+    }
+    
+  }
 </script>
 
 <template>
@@ -122,6 +148,7 @@ const saveChanges = async () => {
                 </div>
             </div>
         </div>
+        <button class="log-out" @click="logOut">Log Out</button>
         <template v-if="isEditing">
             <button class="card-button" @click="saveChanges">Confirm</button>
         </template>
@@ -211,6 +238,23 @@ const saveChanges = async () => {
   
   .card-button:hover {
       color: var(--color-blue);
+  }
+  .log-out {
+      position: absolute;
+      bottom: 20px;
+      right: 150px;
+      background-color: rgb(196, 40, 40);
+      color: var(--neutral-colors-white);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      outline: none;
+      font-family: var(--font-roboto);
+  }
+  
+  .log-out:hover {
+      color: var(--color-yellow);
   }
   
   .editable-input {
