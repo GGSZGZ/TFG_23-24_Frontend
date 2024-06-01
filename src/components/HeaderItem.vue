@@ -1,30 +1,117 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue';
+import {jwtDecode} from 'jwt-decode';
+
+// Obtener el token JWT del almacenamiento local
+const token = ref<string | null>(localStorage.getItem("jwtToken"));
+
+// Inicializar el token decodificado
+let decodedToken: { role: string } | null = null;
+
+if (token.value) {
+  try {
+    // Decodificar el token JWT
+    decodedToken = jwtDecode<{ role: string }>(token.value);
+  } catch (error) {
+    console.error('Invalid token specified:', error);
+    token.value = null; // Restablecer el token si es inválido
+  }
+}
+
+// Obtener la información del estudio del almacenamiento local
+const studio = ref<string | null>(localStorage.getItem("studioLogged"));
+const studioData = ref<any>(null);
+
+if (studio.value && studio.value !== 'null') {
+  try {
+    // Analizar la información del estudio
+    studioData.value = JSON.parse(studio.value);
+  } catch (error) {
+    console.error('Error parsing studio data:', error);
+    studio.value = null; // Restablecer el estudio si es inválido
+  }
+}
+
+// Verificar los cambios en el valor de `studio`
+watch(studio, (newValue) => {
+  if (newValue && newValue !== 'null') {
+    try {
+      studioData.value = JSON.parse(newValue);
+    } catch (error) {
+      console.error('Error parsing studio data:', error);
+      studio.value = null; // Restablecer el estudio si es inválido
+    }
+  }
+});
+
+// Computed properties para determinar el estado de inicio de sesión
+const isUserLoggedIn = computed(() => decodedToken?.role === 'user' && !studioData.value);
+const isAdminLoggedIn = computed(() => decodedToken?.role === 'admin' && !studioData.value);
+const isStudioLoggedIn = computed(() => !decodedToken && studioData.value);
+const isGuest = computed(() => !decodedToken && !studioData.value);
+
+// Computed para obtener el id del estudio
+const studioId = computed(() => studioData.value?.studioID || '');
+
+// Imprimir información de depuración
+console.log(decodedToken?.role + ', ' + (studioData.value ? studioData.value.studioID : 'No Studio Data'));
+</script>
+
 <template>
   <link
     rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@400;600;700&display=swap"
   />
-  <!-- <div class="logo">
-    <canvas id="myCanvasH" width="286px" height="220px" class="logo-1-icon"> </canvas>
-    <slot name="logosearchtexto"></slot>
-  </div> -->
 
   <nav class="sections">
-    <h3 class="admin">
-      <slot name="admin"></slot>
-    </h3>
     <h3 class="home">
       <slot name="home"></slot>
     </h3>
 
     <h3 class="about">
-      <slot name="about"></slot>
+      <slot name="about">
+        <RouterLink
+        v-if="isUserLoggedIn"
+          to="/library"
+          style="text-decoration: none; color: var(--neutral-colors-headings-black)"
+          >Library</RouterLink
+        >
+      </slot>
     </h3>
     <h3 class="about">
       <slot name="contact"></slot>
     </h3>
     <h3 class="profile">
-      <slot name="profile"></slot>
+      <slot name="profile">
+        <RouterLink
+          v-if="isUserLoggedIn"
+          to="/profile"
+          style="text-decoration: none; color: var(--neutral-colors-headings-black);"
+        >
+          Profile
+        </RouterLink>
+        <RouterLink
+          v-else-if="isAdminLoggedIn"
+          to="/admin"
+          style="text-decoration: none; color: var(--neutral-colors-headings-black);"
+        >
+          Admin
+        </RouterLink>
+        <RouterLink
+          v-else-if="isStudioLoggedIn"
+          :to="`/studio/${studioId}`"
+          style="text-decoration: none; color: var(--neutral-colors-headings-black);"
+        >
+          Studio
+        </RouterLink>
+        <RouterLink
+          v-else-if="isGuest"
+          to="/login&register"
+          style="text-decoration: none; color: var(--neutral-colors-headings-black);"
+        >
+          Login
+        </RouterLink>
+      </slot>
     </h3>
   </nav>
   <slot name="hrindex">
@@ -34,6 +121,7 @@
 </template>
 
 <style scoped>
+/* Tu CSS existente */
 .logo {
   position: absolute;
   top: 0;
@@ -64,7 +152,6 @@
   color: #000000;
   font-family: var(--font-roboto);
 }
-
 .header-line-hr {
   position: absolute;
   top: 109px;
@@ -86,95 +173,15 @@
   font-family: inherit;
   cursor: pointer;
 }
-.admin {
-  margin: 0;
-  position: relative;
-  line-height: 18px;
-  font-weight: 400;
-  font-family: inherit;
-  display: none;
-}
 .profile {
   margin: 0;
   position: relative;
   line-height: 18px;
   font-weight: 400;
   font-family: inherit;
+  transition: color 1s;
 }
-/*Search*/
-.container {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 13px;
-  border-radius: 100%;
-  width: 80px;
-  height: 80px;
-  left: 90%;
-  box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.2);
-  transform: scale(0.7);
-  background-color: white;
-  z-index: 10;
-  cursor: pointer;
-}
-
-.search {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  transition: all 1s;
-  z-index: 4;
-}
-
-input {
-  position: absolute;
-  margin: auto;
-  width: 50px;
-  height: 50px;
-  outline: none;
-  border: none;
-  background: var(--color-maroon);
-  border-radius: 30px;
-  transition: all 1s;
-  opacity: 0;
-  z-index: 5;
-  left: 20px; /* Ajustado a la izquierda */
-  padding-left: 20px;
-  color: var(--color-goldenrod);
-  cursor: pointer;
-}
-
-input::placeholder {
-  color: var(--color-goldenrod);
-  opacity: 0.5;
-  font-weight: bolder;
-}
-.search-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: white;
-  border: 1px solid #ccc;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: none;
-}
-
-.search-results li {
-  line-height: 50px;
-  height: 50px;
-  font-family: var(--font-playfair-display);
-  color: var(--color-gray);
-  font-size: var(--font-size-xl);
-  cursor: pointer;
-  padding-left: 10px;
-  position: relative; /* Asegura que el z-index funcione */
-  z-index: 1000; /* Elige un valor alto para colocarlo por delante */
-}
-.search-results li:hover {
-  background-color: var(--color-goldenrod);
+.profile:hover {
+  color: var(--color-blue);
 }
 </style>

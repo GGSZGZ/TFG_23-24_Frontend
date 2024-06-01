@@ -157,7 +157,29 @@ const navigateToGame = (id: any) => {
 
 .cards-container {
   height: 900px;
+  overflow-y: hidden;
+  transition: overflow-y 0.2s ease;
+}
+.cards-container:hover {
   overflow-y: auto;
+}
+  /* Custom scrollbar for WebKit browsers */
+.cards-container::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.cards-container::-webkit-scrollbar-track {
+  background:  rgba(241, 241, 241, 0.5); /* Background of the scrollbar track */
+  border-radius: 4px;
+}
+
+.cards-container::-webkit-scrollbar-thumb {
+  background: var(--neutral-colors-white); /* Color of the scrollbar thumb */
+  border-radius: 4px;
+}
+
+.cards-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-black); /* Color of the scrollbar thumb on hover */
 }
 
 
@@ -199,7 +221,8 @@ const navigateToGame = (id: any) => {
 }
 
 .card-title {
-  bottom: 15px;
+  bottom: 8px;
+  margin-bottom: 10px;
   right: 5px;
   position: relative;
   color: var(--neutral-colors-white);
@@ -275,6 +298,9 @@ const navigateToGame = (id: any) => {
   right: 3%;
 }
 .card-subtitle{
+  padding: 0;
+  padding-top: 5px;
+  padding-left: 5px;
   max-width: 520px;
   gap: 10px;
 }
