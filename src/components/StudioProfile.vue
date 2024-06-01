@@ -2,10 +2,12 @@
 import { ref, onMounted } from 'vue';
 import { useApiStore, pinia } from '../store/api';
 import { useRouter } from 'vue-router';
+import s3Service from '../services/s3Service';
 
 // Definimos variables reactivas para almacenar los datos del estudio
 const studioData = ref(null);
 const router = useRouter();
+const studioImageUrl = ref('');
 
 onMounted(async () => {
 const studioID = Number(router.currentRoute.value.params.id);
@@ -13,6 +15,7 @@ const studioID = Number(router.currentRoute.value.params.id);
   
   if (studioData) {
     studioData.value = studioFetch;
+    studioImageUrl.value = await s3Service.getStudioImageUrl(`Studio${studioID}`);
   }
 });
 
@@ -20,7 +23,7 @@ const studioID = Number(router.currentRoute.value.params.id);
 
 <template>
     <div class="card" v-if="studioData">
-        <img src="/src/assets/cyber_site.jpg" alt="Descripción de la imagen" class="card-image">
+        <img :src="studioImageUrl" alt="Studio Image" class="card-image">
         <div class="card-content">
             <div class="card-column">
                 <div class="card-username">

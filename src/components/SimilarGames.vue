@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useApiStore, pinia } from '../store/api';
+import s3Service from '../services/s3Service';
 
 const game = ref(null);
 const gamesFiltered = ref([]);
@@ -32,6 +33,11 @@ async function searchSimilarGames(categories: string) {
     const gameCategories = g.categories.split(',').map((category: any) => category.trim());
     return gameCategories.some((category: any) => currentCategories.includes(category));
   });
+
+  for (const game of similarGames) {
+    const imageUrl = await s3Service.getImageUrl('Studio' + game.studioID, 'Game' + game.gameID, 1);
+    game.imageUrl = imageUrl;
+  }
   return similarGames;
 }
 
@@ -61,7 +67,7 @@ const navigateToGame = (gameID: any) => {
     <hr />
     <div class="game-container">
       <div class="game" v-for="(game, index) in gamesFiltered.slice(0, 6)" :key="game.gameID" @click="navigateToGame(game.gameID)">
-        <img src="/src/assets/cyber_site.jpg" class="image">
+        <img :src="game.imageUrl" class="image">
         <div class="title">{{ game.name }}</div>
         <div class="price-block">
           <div v-if="game.discount > 0" class="discounted-price">

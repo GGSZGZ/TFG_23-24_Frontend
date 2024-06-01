@@ -3,6 +3,8 @@ import { useApiStore, pinia } from '../store/api';
 import { ref, onMounted } from 'vue';
 import { jwtDecode } from 'jwt-decode'; 
 import { useRouter } from 'vue-router';
+import s3Service from '../services/s3Service';
+
 
 const games = ref([]);
 const token = localStorage.getItem('jwtToken');
@@ -15,6 +17,13 @@ if (!token || token === 'null') {
   const fetchGames = async () => {
     try {
       games.value = await useApiStore(pinia).fetchGamesLibraryGameUser(decodedToken.id);
+
+      for (const game of games.value) {
+        const studio = `Studio${game.studioID}`;
+        game.imageUrl = await s3Service.getImageUrl(studio, 'Game'+game.gameID, 1);
+        console.log(game.imageUrl);
+        
+      }
     } catch (error) {
       console.error('Error fetching games:', error);
     }
@@ -43,7 +52,7 @@ const handleClick = (item: any) => {
   <v-container class="cards-container" fluid>
     <div class="cards">
       <div class="card" v-for="game in games" :key="game.gameID" @click="handleClick(game)">
-        <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
+        <img :src="game.imageUrl" alt="Game Image" class="card-image">
         <div class="card-content">
           <h2 class="card-title">{{ game.name }}</h2>
           <div class="card-subtitle">

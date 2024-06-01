@@ -3,11 +3,14 @@ import { ref, onMounted, computed } from 'vue';
 import { useApiStore, pinia } from '../store/api';
 import { useRouter } from 'vue-router';
 import { defineProps } from 'vue';
+import s3Service from '../services/s3Service';
+
 
 // Definir la prop que recibirá la categoría seleccionada
 const props = defineProps<{ selectedCategory: string | null }>();
 
 const games = ref([]);
+const images = ref({});
 
 
 const formatDate = (dateString: string) => {
@@ -24,6 +27,20 @@ onMounted(async () => {
     const studioID = Number(router.currentRoute.value.params.id);
     const fetchGames = await useApiStore(pinia).fetchGamesStudio(studioID);
     games.value = fetchGames;
+
+    // Cargar imágenes para cada juego
+  for (const game of games.value) {
+    const studio = `Studio${studioID}`;
+    const gameName = `Game${game.gameID}`;
+
+    const gameImages = [];
+    for (let i = 1; i <= 5; i++) {
+      const imageUrl = await s3Service.getImageUrl(studio, gameName, i);
+      gameImages.push(imageUrl);
+    }
+
+    images.value[game.gameID] = gameImages[0]; // Usamos la primera imagen para mostrar en la tarjeta
+  }
 });
 
 const calculateDiscountedPrice = (price: number, discount: number) => {
@@ -53,7 +70,7 @@ const filteredGames = computed(() => {
   <v-container class="cards-container" fluid>
     <div class="cards">
       <div class="card" v-for="(game, index) in filteredGames" :key="index" @click="navigateToGame(game.gameID)">
-        <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
+        <img :src="images[game.gameID]" class="card-image">
         <div class="card-content">
           <h2 class="card-title">{{ game.name }}</h2>
           

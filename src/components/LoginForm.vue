@@ -46,6 +46,7 @@
         // Almacenar la cadena JSON en el localStorage
         localStorage.setItem('studioLogged', studioJSON);
         alert('El estudio se ha logeado correctamente');
+         navigateToHome();
         return;
       }
     }
@@ -91,9 +92,6 @@
       localStorage.setItem('jwtToken', JSON.stringify(null));
       localStorage.setItem('messageLiked','');
        loginStudio(values);
-       setTimeout(() => {
-         navigateToHome();
-       }, 100);
     }else{
       localStorage.setItem('studioLogged', JSON.stringify(null));
       existingUser.value=false;
