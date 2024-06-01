@@ -68,7 +68,8 @@ function changeSlide(index: number) {
         <p>{{ game.synopsis }}</p>
         <p class="release-date"><strong>DATE PUBLISHED:&nbsp;</strong> {{ formattedReleaseDate }}</p>
         <br>
-        <strong>STUDIO:&nbsp;</strong> <span>{{ studioName }}</span>
+        <strong>STUDIO:&nbsp;</strong>
+        <router-link :to="'/studio/' + game.studioID" class="studio-link">{{ studioName }}</router-link>
         <br>
         <div class="categories">
           <strong>CATEGORIES:&nbsp;</strong>
@@ -83,6 +84,16 @@ function changeSlide(index: number) {
 
 
 <style scoped>
+
+.studio-link {
+  color: var(--neutral-colors-white);
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+.studio-link:hover {
+  color: var(--color-blue);
+  text-decoration: underline;
+}
 
 strong {
   font-family: var(--font-orbitron) sans-serif;
