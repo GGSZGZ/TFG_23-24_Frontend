@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useApiStore, pinia } from '../store/api';
 import { ref, onMounted, watch } from 'vue';
+import s3Service from '../services/s3Service';
 
 const props = defineProps<{ gameData: any }>();
 const gameSelected = ref<{ name?: string; description?: string } | null>(null);
@@ -8,7 +9,12 @@ const isLoading = ref(true);
 
 const fetchGame = async () => {
   isLoading.value = true;
-  gameSelected.value = await useApiStore(pinia).fetchGame(props.gameData);
+  const game = await useApiStore(pinia).fetchGame(props.gameData);
+  if (game) {
+    const studio = `Studio${game.studioID}`;
+    game.imageUrl = await s3Service.getImageUrl(studio, "Game"+game.gameID, 1);
+  }
+  gameSelected.value = game;
   isLoading.value = false;
 };
 
@@ -29,7 +35,7 @@ watch(() => props.gameData, fetchGame);
         </div>
         <div class="right">
           <div class="container-image">
-            <img src="/src/assets/ForzaHorizon5_mainImage.jpg" alt="" class="main-image">
+            <img :src="gameSelected?.imageUrl" alt="Game Image" class="main-image">
           </div>
           <div class="text-container">
             <p>

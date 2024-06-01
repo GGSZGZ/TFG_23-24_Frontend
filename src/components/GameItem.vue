@@ -2,17 +2,14 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApiStore, pinia } from '../store/api';
+import s3Service from '../services/s3Service';
 
 const router = useRouter();
 const game = ref(null);
 const studioName = ref('');
 const currentSlide = ref(0);  // Controlador del carrusel
-const images = ref([
-  '/src/assets/ForzaHorizon5_mainImage.jpg',
-  '/src/assets/ForzaHorizon5_secondImage.jpg',
-  '/src/assets/ForzaHorizon5_thirdImage.jpg',
-  '/src/assets/ForzaHorizon5_forthImage.jpg',
-]);
+const images = ref([]);
+
 
 onMounted(async () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -21,6 +18,17 @@ onMounted(async () => {
   game.value = gameData!;
   await useApiStore(pinia).fetchStudio(game.value!.studioID);
   studioName.value = await obtainStudio();
+
+  // Llena el array de imágenes con las URLs del S3
+  const studio = 'Studio' + game.value.studioID;
+  const gameid = game.value.gameID;
+  const gameName = `Game${gameid}`;
+
+  // Llena el array de imágenes con las URLs del S3
+  for (let i = 1; i <= 5; i++) {
+    const imageUrl = await s3Service.getImageUrl(studio, gameName, i);
+    images.value.push(imageUrl);
+  }
 });
 
 const formattedReleaseDate = computed(() => {
@@ -51,19 +59,19 @@ function changeSlide(index: number) {
     <div class="container-images">
       <!-- Componente de Carrusel con clase personalizada  -->
       <v-carousel v-model="currentSlide" hide-delimiters  show-arrows="hover" cycle class="custom-carousel">
-        <v-carousel-item v-for="(src, i) in images" :key="i">
+        <v-carousel-item v-for="(src, i) in images.slice(1)" :key="i">
           <v-img :src="src" class="main-image" contain></v-img>
         </v-carousel-item>
       </v-carousel>
       <!-- Contenedor de miniaturas -->
       <div class="thumbnail-container">
         <!-- Iteración sobre las miniaturas -->
-        <img v-for="(src, index) in images" :key="index" :src="src" class="thumbnail" @click="changeSlide(index)">
+        <img v-for="(src, index) in images.slice(1)" :key="index" :src="src" class="thumbnail" @click="changeSlide(index)">
       </div>
     </div>
     <div class="side-container">
       <!-- Aquí irá el contenido relacionado con el juego -->
-      <img src="/src/assets/ForzaHorizon5_gameImage.jpg" class="side-image">
+      <img :src="images[0]" class="side-image">
       <div class="side-text">
         <p>{{ game.synopsis }}</p>
         <p class="release-date"><strong>DATE PUBLISHED:&nbsp;</strong> {{ formattedReleaseDate }}</p>
@@ -141,6 +149,7 @@ strong {
   cursor: pointer;
   position: relative;
   z-index: 2;
+  object-fit: cover;
 }
 
 .side-container {
