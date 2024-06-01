@@ -40,10 +40,11 @@ watch(selectedStudio, (newStudio) => {
 <style scoped>
 .v-radio {
   font-family: var(--font-roboto);
+  color: var(--color-black);
   font-size: 10px;
 }
 .scrollable {
-  height: 320px;
+  height: 330px;
   overflow-y: auto;
 }
 </style>

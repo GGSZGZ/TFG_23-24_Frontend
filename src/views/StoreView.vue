@@ -1,81 +1,109 @@
 <script setup lang="ts">
-import { useApiStore, pinia } from '../store/api'
-import { jwtDecode } from 'jwt-decode'
+import CarouselItem from '@/components/CarouselItem.vue';
+import GridItem from '@/components/GridItem.vue';
+import CardItem from '@/components/CardItem.vue';
+import SearchBar from '@/components/SearchBar.vue';
+import CategoriesItem from '@/components/CategoriesItem.vue';
+import FiltersStudioItem from '@/components/FiltersStudioItem.vue';
+import SlideItem from '@/components/SlideItem.vue';
+import OrderByItem from '@/components/OrderByItem.vue';
 
-const user = {
-  email: 'user1@example.com',
-  password: 'password1'
-}
-// const userRegister = {
-//   name: 'Probandoregister',
-//   surname: 'Desde frontend',
-//   password: '1234',
-//   age: 21,
-//   email: 'hola@registrado.com',
-//   registerDate: '2024-05-14T15:47:16.200Z',
-//   active: true,
-//   role: 'admin'
-// }
-//put user prueba
-const userData = {
-  message: "sueltenme"
+import { ref } from 'vue';
+
+// Variable reactiva para la categoría seleccionada
+const selectedValues = ref<string | null>("None");
+const selectedOrder = ref<string | null>(null);
+  const selectedStudio = ref<string | null>('None');
+const maxPrice = ref<number | null>(null);
+
+// Manejar el evento emitido por CategoriesItem
+const handleCategorySelected = (values: [] | null) => {
+  selectedValues.value = values;
 };
-// test login
-const loginUser = async () => {
-  const token = await useApiStore(pinia).fetchPostLoginUser(user)
-  if (token) {
-    localStorage.setItem('jwtToken', token)
-    decodedToken()
-  } else {
-    console.error('Error al iniciar sesión.')
-  }
-}
-//test register
-// const registerUser = async () => {
-//   const token = await useApiStore(pinia).fetchPostRegisterUser(userRegister)
-//   if (token) {
-//     localStorage.setItem('jwtToken', token)
-//     console.log('Token recibido:', token)
-//     decodedToken()
-//   } else {
-//     console.error('Error al iniciar sesión.')
-//   }
-// }
 
-const decodedToken = async () => {
-  const token = localStorage.getItem('jwtToken')
+const handleOrderChanged = (newOrder: string | null) => {
+  selectedOrder.value = newOrder;
+};
 
-  if (!token) {
-    console.error('No se encontró un token JWT en el almacenamiento local.')
-    return
-  }
+const handleStudioChanged = (newStudio: string | null) => {
+  selectedStudio.value = newStudio;
+};
 
-  // Decodificar el token JWT
-  const decodedToken = jwtDecode(token)
-
-  // console.log('Token decodificado:', decodedToken)
-  console.log('Token sin decodificar:', token)
-await useApiStore(pinia).fetchUpdateCommunity(1,userData);
-
-}
-loginUser()
-// registerUser()
+const handlePriceChanged = (newPrice: number | null) => {
+  maxPrice.value = newPrice;
+};
 </script>
 
 <template>
-  <main>
-    <h1>HOLAStore</h1>
-  </main>
+  <CarouselItem />
+  <SearchBar />
+  <GridItem />
+  <div class="columns">
+    <CardItem class="cards" :selectedValues="selectedValues" :selectedOrder="selectedOrder" :selectedStudio="selectedStudio" :maxPrice="maxPrice" />
+    <div class="filters">
+      <div class="categories">
+        <p>Categories</p>
+        <CategoriesItem @categorySelected="handleCategorySelected" />
+      </div>
+      <div class="filter-values">
+        <div class="order">
+          <OrderByItem @orderChanged="handleOrderChanged" />
+        </div>
+        <div class="price">
+          <SlideItem @priceChanged="handlePriceChanged" />
+        </div>
+        <p>Studios</p>
+        <FiltersStudioItem @studioChanged="handleStudioChanged" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-main {
-  background-color: var(--color-maroon);
-  width: 100%;
-  height: auto;
-  text-align: center;
-  font-size: var(--font-size-25xl);
-  color: var(--color-goldenrod);
-  font-family: var(--font-lobster);
+.columns {
+  display: flex;
+  flex-direction: row;
+}
+.cards {
+  flex: 3;
+}
+.categories {
+  background-color: var(--color-blue);
+  height: fit-content;
+}
+.filters {
+  flex: 1;
+}
+p {
+  font-family: var(--font-archivo-black);
+}
+</style>
+
+
+<style scoped>
+.columns{
+    display: flex;
+    flex-direction: row;
+}
+.cards{
+    flex:3;
+}
+.categories{
+    background-color: var(--color-blue);
+    height: fit-content;
+}
+.filters{
+    flex: 1;
+}
+.filter-values{
+    background-color: var(--color-yellow);
+    color: var(--neutral-colors-white);
+}
+p{
+  font-family: var(--font-archivo-black);
+  color: var(--color-black);
+}
+.order, .price{
+  background-color: var(--color-dark-blue);
 }
 </style>

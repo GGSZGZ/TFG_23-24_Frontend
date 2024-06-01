@@ -26,25 +26,11 @@ import './assets/main.css'
   <header>
     
     <HeaderItem>
-      <template #admin
-        ><RouterLink
-          to="/admin"
-          style="text-decoration: none; color: var(--neutral-colors-headings-black)"
-          >Admin</RouterLink
-        ></template
-      >
       <template #home
         ><RouterLink
           to="/"
           style="text-decoration: none; color: var(--neutral-colors-headings-black)"
           >Store</RouterLink
-        ></template
-      >
-      <template #about
-        ><RouterLink
-          to="/library"
-          style="text-decoration: none; color: var(--neutral-colors-headings-black)"
-          >Library</RouterLink
         ></template
       >
       <template #contact
@@ -54,13 +40,7 @@ import './assets/main.css'
           >About us</RouterLink
         ></template
       >
-      <template #profile
-        ><RouterLink
-          to="/login&register"
-          style="text-decoration: none; color: var(--neutral-colors-headings-black)"
-          >Login</RouterLink
-        ></template
-      >
+      
     </HeaderItem>
   </header>
 
@@ -93,13 +73,13 @@ header {
   background-color: --neutral-colors-white;
   width: 100%;
   height: 110px;
-  background-color: #d8dc06;
+  background-color: var(--color-yellow);
 }
 footer {
   background-color: --neutral-colors-white;
   width: 100%;
   height: 110px;
-  background-color: #d8dc06;
+  background-color: var(--color-yellow);
 }
 .logosolo-texto-1 {
   position: absolute;

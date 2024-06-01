@@ -62,9 +62,32 @@ watch(selectedCategory, (newCategory) => {
     font-family: var(--font-roboto);
     font-size: 10px;
   }
-  .scrollable{
+  .scrollable {
     height: 400px;
+    overflow-y: hidden;
+    transition: overflow-y 0.2s ease;
+  }
+
+  .scrollable:hover {
     overflow-y: auto;
   }
+  /* Custom scrollbar for WebKit browsers */
+.scrollable::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.scrollable::-webkit-scrollbar-track {
+  background:  rgba(241, 241, 241, 0.5); /* Background of the scrollbar track */
+  border-radius: 4px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar thumb */
+  border-radius: 4px;
+}
+
+.scrollable::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the scrollbar thumb on hover */
+}
   </style>
   
