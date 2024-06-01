@@ -84,7 +84,7 @@ console.log(decodedToken?.role + ', ' + (studioData.value ? studioData.value.stu
         </RouterLink>
         <RouterLink
           v-else-if="isStudioLoggedIn"
-          to="/studio/studio&admin"
+          to="/studio&admin"
           style="text-decoration: none; color: var(--neutral-colors-headings-black);"
         >
           Studio

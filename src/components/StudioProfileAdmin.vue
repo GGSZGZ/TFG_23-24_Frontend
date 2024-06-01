@@ -2,9 +2,11 @@
 import { ref, reactive, onMounted } from 'vue';
 import { useApiStore, pinia } from '../store/api';
 import { useRouter } from 'vue-router';
+import s3Service from '../services/s3Service';
 
 const studioData = ref(null);
 const isEditing = ref(false);
+const studioImageUrl = ref('');
 const editedData = reactive({
   name: '',
   fundation: '',
@@ -20,6 +22,7 @@ onMounted(async () => {
     if (studioLocal && studioLocal !== 'null') {
         const studioObject = JSON.parse(studioLocal);
         const studioSelected = await useApiStore(pinia).fetchStudio(studioObject.studioID);
+        studioImageUrl.value = await s3Service.getStudioImageUrl(`Studio${studioObject.studioID}`);
         Object.assign(editedData, studioSelected);
         studioData.value = studioSelected;
     }
@@ -87,7 +90,7 @@ const logOut = () =>{
 
 <template>
     <div class="card" v-if="studioData">
-        <img src="/src/assets/cyber_site.jpg" alt="Descripción de la imagen" class="card-image">
+        <img :src="studioImageUrl" alt="Descripción de la imagen" class="card-image">
         <div class="card-content">
             <div class="card-column">
                 <div class="card-username">
