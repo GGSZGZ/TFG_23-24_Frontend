@@ -17,6 +17,7 @@ onMounted(async () => {
   try {
     const apiStore = useApiStore(pinia);
     const fetchedMessages = await apiStore.fetchMessagesUser(decodedToken.id);
+    
     messages.value = fetchedMessages;
 
     // Obtener y almacenar los nombres de usuario para cada mensaje
@@ -51,13 +52,15 @@ const startEditing = (messageID: number, currentMessage: string) => {
 const saveMessage = async (messageID: number) => {
   try {
     const messageDTO={
-        message : newMessageContent.value
+        message : newMessageContent.value,
+        edited : true
     }
     const apiStore = useApiStore(pinia);
     await apiStore.fetchUpdateCommunity(messageID, messageDTO);
     const messageIndex = messages.value.findIndex(msg => msg.messageID === messageID);
     if (messageIndex !== -1) {
       messages.value[messageIndex].message = newMessageContent.value;
+      messages.value[messageIndex].edited = true;
     }
     editingMessageID.value = null;
   } catch (error) {
@@ -77,6 +80,7 @@ const saveMessage = async (messageID: number) => {
                 <span class="date">{{ formatDate(message.publicationDate) }}</span>
                 <p class="comment-text" v-if="editingMessageID !== message.messageID">{{ message.message }}</p>
                 <input v-else v-model="newMessageContent" class="comment-input" />
+                <span v-if="message.edited" class="edited-label"><em>Edited</em></span>
               </div>
             </div>
             <div class="comment-right">
@@ -94,7 +98,7 @@ const saveMessage = async (messageID: number) => {
   cursor: not-allowed;
 }
 .comments-container {
-  max-height: 500px; /* Ajustar según sea necesario */
+  max-height: 500px;
   overflow-y: auto;
   background-color: var(--color-dark-blue);
   padding: 20px;
@@ -128,7 +132,7 @@ hr {
 }
 
 .comment-right {
-  display: flex; /* Convertir a display flex */
+  display: flex;
   align-items: center;
   margin-top: 10px;
   margin-left: 4%;
@@ -136,9 +140,9 @@ hr {
 .comment-right button {
   background-color: transparent;
   border: none;
-  padding: 10px; /* Añade relleno aquí */
+  padding: 10px;
   cursor: pointer;
-  flex-grow: 0; /* Evita que el botón crezca */
+  flex-grow: 0;
 }
 .comment-right button:hover {
   background-color: var(--color-yellow);
@@ -187,5 +191,12 @@ hr {
   font-family: var(--font-orbitron);
   background-color: var(--color-yellow) !important;
   color: var(--color-black) !important;
+}
+
+.edited-label {
+  margin-top: 5px;
+  margin-left: 310px;
+  font-style: italic;
+  color: gray;
 }
 </style>

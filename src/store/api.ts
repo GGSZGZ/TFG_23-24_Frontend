@@ -823,11 +823,6 @@ export const useApiStore = defineStore('flashgaminghub', {
     async fetchUpdateGameShop(id: number, gameShopData: any) {
        
       try {
-        if (!this.token) {
-          console.error('No se encontró ningún token JWT en el localStorage');
-          return;
-        }
-
         const formattedGameShopData: { [key: string]: any } = {};
         Object.keys(gameShopData).forEach(key => {
           formattedGameShopData[key] = gameShopData[key];
@@ -835,7 +830,6 @@ export const useApiStore = defineStore('flashgaminghub', {
         const response = await fetch(`https://localhost:7025/GameShop/${id}`, {
           method: 'PUT',
           headers: {
-            Authorization: `Bearer ${this.token}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(formattedGameShopData)
