@@ -2,6 +2,7 @@
 import { useApiStore, pinia } from '../store/api';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import s3Service from '../services/s3Service';
 
 const games = ref([]);
 
@@ -33,16 +34,16 @@ const calculateDiscountedPrice = (price: number, discount: number) => {
 };
 
 onMounted(async () => {
-  games.value = await useApiStore(pinia).fetchGamesGameShop(1);
-  if (games.value.length > 0) {
-    games.value.forEach(game => {
-      if (game.discount > 0) {
-        game.finalPrice = calculateDiscountedPrice(game.price, game.discount);
-      } else {
-        game.finalPrice = game.price;
-      }
-    });
-  }
+  const response = await useApiStore(pinia).fetchGamesGameShop(1);
+  games.value = await Promise.all(response.map(async (game:any) => {
+    const studio = `Studio${game.studioID}`;
+    const imageUrl = await s3Service.getImageUrl(studio, 'Game' + game.gameID, 1);
+    return {
+      ...game,
+      imageUrl,
+      finalPrice: game.discount > 0 ? calculateDiscountedPrice(game.price, game.discount) : game.price
+    };
+  }));
 });
 </script>
 
@@ -56,7 +57,7 @@ onMounted(async () => {
           <p class="date">Until {{ formatDate(games[0].releaseDate) }}</p>
         </div>
         <div class="image-container">
-          <img src="/src/assets/ForzaHorizon5_mainImage.jpg" alt="" class="imgMin">
+          <img :src="games[0].imageUrl" alt="" class="imgMin">
         </div>
         <div class="info">
           <div class="categories">
@@ -78,7 +79,7 @@ onMounted(async () => {
               <p class="date-min">Until {{ formatDate(game.releaseDate) }}</p>
             </div>
           <div class="image-container">
-            <img src="/src/assets/ForzaHorizon5_mainImage.jpg" alt="" class="imgMin">
+            <img :src="game.imageUrl" alt="" class="imgMin">
           </div>
           <div class="info-min">
             <span class="category-min">{{ categoriesSnd(game.categories) }}</span>

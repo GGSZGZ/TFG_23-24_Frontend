@@ -162,10 +162,11 @@ strong {
 
 .side-image {
   width: 400px;
-  height: 250px;
+  height: auto;
   background-color: #cccccc;
   margin-bottom: 10px;
   border-radius: 10px;
+  object-fit: contain;
 }
 
 .side-text {

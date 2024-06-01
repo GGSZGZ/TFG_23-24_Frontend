@@ -3,26 +3,31 @@ import { useApiStore, pinia } from '../store/api';
 import { ref, onMounted } from 'vue';
 import { jwtDecode } from 'jwt-decode'; 
 import { useRouter } from 'vue-router';
+import s3Service from '../services/s3Service';
 
 const games = ref([]);
 const token = localStorage.getItem('jwtToken');
 
-if (!token || token === 'null') {
-  alert('Debes iniciar sesión como usuario para comprar un juego.');
-} else {
-  const decodedToken = jwtDecode(token) as { id: number };
 
-  const fetchGames = async () => {
+  const fetchGames = async (userId:any) => {
     try {
-      games.value = await useApiStore(pinia).fetchGamesLibraryGameUser(decodedToken.id);
-      const libraryUser=await useApiStore(pinia).fetchLibraryGameUser(decodedToken.id);
-      
+      const gamesLibrary = await useApiStore(pinia).fetchGamesLibraryGameUser(userId);
+      const updatedGames = await Promise.all(gamesLibrary.map(async (game) => {
+      const studio = `Studio${game.studioID}`;
+      const imageUrl = await s3Service.getImageUrl(studio, "Game"+game.gameID, 1);
+      return { ...game, imageUrl };
+    }));
+    games.value = updatedGames;
     } catch (error) {
       console.error('Error fetching games:', error);
     }
   };
 
-  onMounted(fetchGames);
+  if (!token || token === 'null') {
+  alert('Debes iniciar sesión como usuario para comprar un juego.');
+} else {
+  const decodedToken = jwtDecode(token) as { id: number };
+  onMounted(() => fetchGames(decodedToken.id));
 }
 
 const formatDate = (dateString: string) => {
@@ -45,7 +50,7 @@ const handleClick = (item: any) => {
   <v-container class="cards-container" fluid>
     <div v-if="games.length>0" class="cards">
       <div class="card" v-for="game in games" :key="game.gameID" @click="handleClick(game)">
-        <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
+        <img :src="game.imageUrl" class="card-image">
         <div class="card-content">
           <h2 class="card-title">{{ game.name }}</h2>
           <div class="card-subtitle">

@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useApiStore, pinia } from '../store/api';
 import {jwtDecode} from 'jwt-decode';
+import s3Service from '../services/s3Service';
 
 const games = ref([]);
 const user = localStorage.getItem('jwtToken');
@@ -38,6 +39,11 @@ onMounted(async () => {
 
     // Emitir el evento de actualización de precio
     emit('update-price', totalPrice);
+
+    games.value.forEach(async game => {
+      const imageUrl = await s3Service.getImageUrl(`Studio${game.studioID}`, `Game${game.gameID}`, 1);
+      game.imageUrl = imageUrl;
+    });
   }
 });
 
@@ -91,7 +97,7 @@ const deleteAllGames = async () => {
   <v-container class="cards-container" fluid>
     <div class="cards">
       <div class="card" v-for="(game, index) in games" :key="index">
-        <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
+        <img :src="game.imageUrl" class="card-image">
         <div class="card-content">
           <h2 class="card-title">{{ game.name }}</h2>
           

@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { useApiStore, pinia } from '../store/api';
 import { ref, onMounted } from 'vue';
+import s3Service from '../services/s3Service';
 
 const games = ref([]);
 const loading = ref(true);
 
-onMounted(async () => {
+const fetchGames = async () => {
   const response = await useApiStore(pinia).fetchGamesGameShop(1);
-  games.value = response;
+  const updatedGames = await Promise.all(response.map(async (game) => {
+    const studio = `Studio${game.studioID}`;
+    const imageUrl = await s3Service.getImageUrl(studio,'Game'+game.gameID, 1);
+    return { ...game, imageUrl };
+  }));
+  games.value = updatedGames;
   loading.value = false;
-});
+};
+onMounted(fetchGames);
 </script>
 
 <template>
@@ -30,7 +37,7 @@ onMounted(async () => {
       <v-sheet
         height="100%"
         class="carousel-slide"
-        style="backgroundImage: url(/src/assets/ForzaHorizon5_mainImage.jpg)"
+        :style="`background-image: url(${game.imageUrl})`"
       >
         <div class="carousel-content">
           <h3 class="carousel-title">{{ game.name }}</h3>
@@ -46,11 +53,13 @@ onMounted(async () => {
 .carousel-slide {
   position: relative;
   width: 100%;
+  height: 100%; /* Asegura que el contenedor tenga el 100% de la altura */
   display: flex;
   justify-content: center;
   align-items: center;
-  background-size: cover;
-  background-position: center;
+  background-size: cover; /* Mantiene la proporción de la imagen y la cubre */
+  background-position: center; /* Centra la imagen en el contenedor */
+  background-repeat: no-repeat;
   color: white;
   text-align: left;
 }

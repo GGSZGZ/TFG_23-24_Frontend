@@ -2,6 +2,8 @@
 import { useApiStore, pinia } from '../store/api';
 import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import s3Service from '../services/s3Service';
+
 
 const props = defineProps<{
   selectedValues: string | null;
@@ -63,15 +65,16 @@ const fetchGames = async (category: string | null) => {
   }
 
   try {
-    games.value = await apiStore.fetchGamesGameShop(1, category, maxPrice, orderDate, orderPrice, orderName);
+    const gamesData = await apiStore.fetchGamesGameShop(1, category, maxPrice, orderDate, orderPrice, orderName);
 
-    if (games.value.length > 0) {
-      games.value.forEach(game => {
-        game.finalPrice = game.discount > 0
-          ? calculateDiscountedPrice(game.price, game.discount)
-          : game.price;
-      });
-    }
+    games.value = await Promise.all(gamesData.map(async game => {
+      const imageUrl = await s3Service.getImageUrl(`Studio${game.studioID}`, `Game${game.gameID}`, 1);
+      const finalPrice = game.discount > 0
+        ? calculateDiscountedPrice(game.price, game.discount)
+        : game.price;
+      return { ...game, imageUrl, finalPrice };
+    }));
+
     filterGames();
   } catch (error) {
     games.value = [];
@@ -125,7 +128,7 @@ const navigateToGame = (id: any) => {
       </div>
       <div v-else>
         <div class="card" v-for="game in filteredGames" :key="game.gameID" @click="navigateToGame(game.gameID)">
-          <img src="/src/assets/ForzaHorizon5_mainImage.jpg" class="card-image">
+          <img :src="game.imageUrl" class="card-image">
           <div class="card-content">
             <h2 class="card-title">{{ game.name }}</h2>
             <div class="card-subtitle">
