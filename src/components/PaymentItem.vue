@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'vue-router';
 import { useApiStore, pinia } from '../store/api';
-import { userInfo } from 'os';
 
 const user = ref(null);
 const token = localStorage.getItem('jwtToken');
