@@ -6,6 +6,7 @@ import s3Service from '../services/s3Service';
 const props = defineProps<{ gameData: any }>();
 const gameSelected = ref<{ name?: string; description?: string } | null>(null);
 const isLoading = ref(true);
+const isDownloading = ref(false);
 
 const fetchGame = async () => {
   isLoading.value = true;
@@ -16,6 +17,14 @@ const fetchGame = async () => {
   }
   gameSelected.value = game;
   isLoading.value = false;
+};
+
+const simulateDownload = () => {
+  isDownloading.value = true;
+  setTimeout(() => {
+    isDownloading.value = false;
+    alert('Download complete, enjoy ;)');
+  }, 3000); // 3 segundos para completar la animación
 };
 
 // Fetch the game data when the component is mounted or when the props change
@@ -31,7 +40,16 @@ watch(() => props.gameData, fetchGame);
       <hr>
       <div class="first-container">
         <div class="left">
-          <button class="download-button">DOWNLOAD</button>
+          <button 
+            class="download-button" 
+            @click="simulateDownload" 
+            :disabled="isDownloading"
+          >
+            <span v-if="!isDownloading">DOWNLOAD</span>
+            <span v-else class="progress-bar-container">
+              <span class="progress-bar animated-progress-bar"></span>
+            </span>
+          </button>
         </div>
         <div class="right">
           <div class="container-image">
@@ -68,6 +86,7 @@ watch(() => props.gameData, fetchGame);
 
 .title {
   font-family: var(--font-archivo-black);
+  color: var(--neutral-colors-white);
   margin-top: 20px;
 }
 
@@ -80,7 +99,37 @@ watch(() => props.gameData, fetchGame);
   color: #fff;
   border: none;
   cursor: pointer;
-  height: 200px;
+  height: 50px;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-button:disabled {
+  cursor: not-allowed;
+}
+
+.progress-bar-container {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: #444;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar {
+  display: block;
+  height: 100%;
+  background-color: var(--color-yellow);
+}
+
+.animated-progress-bar {
+  animation: progress 3s linear forwards;
+}
+
+@keyframes progress {
+  0% { width: 0; }
+  100% { width: 100%; }
 }
 
 
@@ -100,7 +149,8 @@ h1 {
   display: flex;
   justify-content: center;
   height: 40%;
-  margin-bottom: 10px;
+  margin-top: 40px;
+  margin-bottom: 20px;
 }
 
 .text-container {
@@ -111,6 +161,7 @@ h1 {
 .description-text{
   width: 95%;
   margin-left: 20px;
+  margin-bottom: 40px;
 }
 
 .first-container {
@@ -138,5 +189,6 @@ p{
   text-align: justify;
   line-height: 30px;
   font-family: var(--font-roboto);
+  color: var(--neutral-colors-white);
 }
 </style>

@@ -103,11 +103,34 @@ hr {
 .game-container {
   width: auto;
   display: flex;
-  justify-content: left; /* Alinear los elementos a la izquierda */
+  justify-content: left;
   gap: 15px;
-  overflow-x: visible;
+  overflow-x: hidden;
   overflow-y: hidden;
   padding: 20px;
+}
+
+.game-container:hover {
+  overflow-x: auto;
+}
+
+/* Custom scrollbar for WebKit browsers */
+.game-container::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.game-container::-webkit-scrollbar-track {
+  background: rgba(241, 241, 241, 0.5); /* Background of the scrollbar track */
+  border-radius: 4px;
+}
+
+.game-container::-webkit-scrollbar-thumb {
+  background: var(--neutral-colors-white); /* Color of the scrollbar thumb */
+  border-radius: 4px;
+}
+
+.game-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-black); /* Color of the scrollbar thumb on hover */
 }
 
 .game {
