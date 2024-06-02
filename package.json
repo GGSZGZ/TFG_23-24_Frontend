@@ -15,6 +15,7 @@
   "dependencies": {
     "@date-io/dayjs": "^3.0.0",
     "@mdi/font": "^7.4.47",
+    "aws-sdk": "^2.1632.0",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
     "jwt-decode": "^4.0.0",

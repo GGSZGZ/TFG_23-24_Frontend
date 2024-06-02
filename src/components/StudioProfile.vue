@@ -10,6 +10,8 @@ const router = useRouter();
 const studioImageUrl = ref('');
 
 onMounted(async () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
 const studioID = Number(router.currentRoute.value.params.id);
   const studioFetch = await useApiStore(pinia).fetchStudio(studioID);
   

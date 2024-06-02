@@ -6,9 +6,9 @@ npm install pinia
 npm install vite
 npm install vuetify
 
-# JWT token
+# S3 bucket
 
-npm install axios
+npm install aws-sdk
 
 # To run the project use
 
