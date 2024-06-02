@@ -10,6 +10,11 @@ npm install vuetify
 
 npm install aws-sdk
 
+# Chart js
+
+npm install chart.js
+
+
 # To run the project use
 
 npm run dev

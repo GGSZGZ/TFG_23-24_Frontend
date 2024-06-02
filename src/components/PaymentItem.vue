@@ -99,6 +99,14 @@ async function saveUserGames() {
 let currentDate = new Date().toISOString();
 
 let annualSalesIncremented = gameShop.annualSales + 1;
+const shoppingCartChartjs = await useApiStore(pinia).fetchShoppingCart(decodedToken.id);
+let totalGamesInCart = 0;
+for (const item of shoppingCartChartjs.games) {
+  totalGamesInCart += item.quantity;
+}
+
+let chartSales = parseInt(localStorage.getItem('totalSales') || '0', 10) + totalGamesInCart;
+localStorage.setItem('totalSales', chartSales.toString());
 
 let gameShopDTO = {
   annualSales: annualSalesIncremented,
