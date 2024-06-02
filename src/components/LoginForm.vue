@@ -25,14 +25,14 @@
         localStorage.setItem('jwtToken', token);
         localStorage.setItem('messageLiked','');
         handleReset();
-        alert('El usuario se ha logeado correctamente');
+        alert('User logged');
         navigateToHome();
       }else{
-        alert('El correo o la contraseña son inválidos');
+        alert('Email or password incorrect');
       }
     } catch (error) {
     console.error('Error during login');
-    alert('Ocurrió un error durante el inicio de sesión.');
+    alert('An error ocurred while login.');
   }
     }
 
@@ -45,17 +45,17 @@
         const studioJSON = JSON.stringify(studio);
         // Almacenar la cadena JSON en el localStorage
         localStorage.setItem('studioLogged', studioJSON);
-        alert('El estudio se ha logeado correctamente');
+        alert('Studio logged succesfully');
          navigateToHome();
         return;
       }
     }
     // Si ningún estudio coincide con el correo electrónico y la contraseña proporcionados
-    alert('El correo o la contraseña son inválidos');
+    alert('Email or password invalid');
     return null;
   } catch (error) {
     console.error('Error durante el inicio de sesión:', error);
-    alert('Ocurrió un error durante el inicio de sesión.');
+    alert('An error ocurred while login.');
   }
 }
 
@@ -106,14 +106,14 @@
       localStorage.setItem('user', JSON.stringify(null));
       localStorage.setItem('jwtToken', JSON.stringify(null));
       localStorage.setItem('messageLiked','');
-      alert('Se ha cerrado sesión');
+      alert('Sesion closed');
       navigateToHome();
     }else if(localStorage.getItem('studioLogged')!=JSON.stringify(null)){
       localStorage.setItem('studioLogged', JSON.stringify(null));
-      alert('Se ha cerrado sesión');
+      alert('Sesion closed');
       navigateToHome();
     }else{
-      alert('Todavía no se ha logueado');
+      alert('Not logued yet');
     }
     
   }
@@ -125,8 +125,8 @@
         <v-text-field
           v-model="emailTlf.value.value"
           :error-messages="emailTlf.errorMessage.value"
-          label="Correo electrónico"
-          placeholder="correo@ejemplo.com"
+          label="Email"
+          placeholder="email@example.com"
         ></v-text-field>
     
         <v-text-field
@@ -134,8 +134,8 @@
           :error-messages="passwd.errorMessage.value"
           :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
           :type="visible ? 'text' : 'password'"
-          label="Contraseña"
-          placeholder="Pon tu contraseña"
+          label="Password"
+          placeholder="Introduce password"
           @click:append-inner="visible = !visible"
         ></v-text-field>
     
@@ -143,7 +143,7 @@
           v-model="checkbox.value.value"
           :error-messages="checkbox.errorMessage.value"
           value="1"
-          label="Acepto los Términos de Política y Privacidad"
+          label="Accept the Terms of Policy and Privacy"
           type="checkbox"
         >
         </v-checkbox>

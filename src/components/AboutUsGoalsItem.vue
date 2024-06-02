@@ -43,8 +43,8 @@ onMounted(() => {
         </v-card>
       </v-col>
       <v-col cols="12" md="4">
-        <v-card class="pa-4 d-flex align-center justify-center black white--text custom-card" height="100%">
-          <span>{{ aboutUs.sections.length > 1 ? aboutUs.sections[1].content : '' }}</span>
+        <v-card class="pa-4 d-flex align-center justify-center black white--text custom-card custom-image-card">
+          <img v-if="aboutUs.sections.length > 1 && aboutUs.sections[1].type === 'image'" :src="aboutUs.sections[1].content" class="responsive-image">
         </v-card>
       </v-col>
     </v-row>
@@ -68,6 +68,16 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
+.responsive-image {
+  max-width: 100%;
+  height: auto;
+ 
+}
+.custom-image-card{
+  padding: 0% !important;
+}
+
  span{
     color: var(--neutral-colors-white);
     font-family: var(--font-archivo-black);

@@ -49,7 +49,7 @@ const fetchPostUser = async (values: any) => {
             localStorage.setItem('jwtToken', token!);
             localStorage.setItem('messageLiked', '');
             await postUpdateTables();
-            alert('El usuario se ha registrado correctamente');
+            alert('User registered correctly');
             setTimeout(() => {
                 navigateToHome();
             }, 1000);
@@ -186,7 +186,7 @@ const submit = handleSubmit((values) => {
     }
     
     if(!birthDate.value){
-      alert('Rellene el campo de fecha porfavor');
+      alert('Date of birth field is missing');
     }
 });
 
@@ -230,7 +230,7 @@ submit;
           v-model="name.value.value"
           :counter="10"
           :error-messages="name.errorMessage.value"
-          label="Nombre"
+          label="Name"
           placeholder="Paco"
       ></v-text-field>
 
@@ -238,15 +238,15 @@ submit;
           v-model="surname.value.value"
           :counter="40"
           :error-messages="surname.errorMessage.value"
-          label="Apellidos"
+          label="Surname"
           placeholder="Fernandez Domingo"
       ></v-text-field>
 
       <v-text-field
           v-model="email.value.value"
           :error-messages="email.errorMessage.value"
-          label="Correo electrónico"
-          placeholder="correo@ejemplo.com"
+          label="Email"
+          placeholder="email@example.com"
       ></v-text-field>
 
       <v-text-field
@@ -254,8 +254,8 @@ submit;
           :error-messages="passwd.errorMessage.value"
           :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
           :type="visible ? 'text' : 'password'"
-          label="Contraseña"
-          placeholder="Pon tu contraseña"
+          label="Password"
+          placeholder="Introduce your password"
           @click:append-inner="visible = !visible"
       ></v-text-field>
 
@@ -263,7 +263,7 @@ submit;
           <template v-slot:activator="{ on, attrs }">
               <v-text-field
                   v-model="formattedDate"
-                  label="Fecha de nacimiento"
+                  label="Date of birth"
                   readonly
                   id="textDateField"
                   v-bind="attrs"
@@ -283,7 +283,7 @@ submit;
           v-model="checkbox.value.value"
           :error-messages="checkbox.errorMessage.value"
           value="1"
-          label="Acepto los Términos de Política y Privacidad"
+          label="Accept the Terms of Policy and Privacy"
           type="checkbox"
       ></v-checkbox>
 

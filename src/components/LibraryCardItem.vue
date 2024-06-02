@@ -21,7 +21,6 @@ if (!token || token === 'null') {
       for (const game of games.value) {
         const studio = `Studio${game.studioID}`;
         game.imageUrl = await s3Service.getImageUrl(studio, 'Game'+game.gameID, 1);
-        console.log(game.imageUrl);
         
       }
     } catch (error) {

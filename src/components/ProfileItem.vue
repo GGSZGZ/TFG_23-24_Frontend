@@ -79,14 +79,14 @@ const logOut = () =>{
       localStorage.setItem('user', JSON.stringify(null));
       localStorage.setItem('jwtToken', JSON.stringify(null));
       localStorage.setItem('messageLiked','');
-      alert('Se ha cerrado sesión');
+      alert('Session closed');
       navigateToHome();
     }else if(localStorage.getItem('studioLogged')!=JSON.stringify(null)){
       localStorage.setItem('studioLogged', JSON.stringify(null));
-      alert('Se ha cerrado sesión');
+      alert('Session closed');
       navigateToHome();
     }else{
-      alert('Todavía no se ha logueado');
+      alert('Not logued yet');
     }
     
   }
@@ -94,7 +94,7 @@ const logOut = () =>{
 
 <template>
   <div class="card" v-if="userData">
-    <img src="/src/assets/cyber_site.jpg" alt="Descripción de la imagen" class="card-image">
+    <img src="/src/assets/profile.jpg" alt="Descripción de la imagen" class="card-image">
     <div class="card-content">
       <div class="card-column">
         <div class="card-username">
@@ -139,7 +139,7 @@ const logOut = () =>{
     </div>
     <button class="log-out" @click="logOut">Log Out</button>
     <template v-if="isEditing">
-      <button class="card-button" @click="saveChanges">Confirmar</button>
+      <button class="card-button" @click="saveChanges">Confirm</button>
     </template>
     <template v-else>
       <button class="card-button" @click="enableEditing">Edit Profile</button>
@@ -162,11 +162,11 @@ const logOut = () =>{
 }
 
 .card-image {
-    width: 20%;
-    height: 60%;
-    border-radius: 20px;
+    width: 15%;
+    height: 90%;
+    border-radius: 50px;
     margin-left: 3%;
-    margin-top: 3%;
+    margin-top: 1%;
 }
 
 .card-content {

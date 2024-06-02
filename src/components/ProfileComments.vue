@@ -84,8 +84,8 @@ const saveMessage = async (messageID: number) => {
               </div>
             </div>
             <div class="comment-right">
-              <button @click="startEditing(message.messageID, message.message)" v-if="editingMessageID !== message.messageID" class="bg-primary">Modificar</button>
-              <button @click="saveMessage(message.messageID)" v-else class="bg-primary">Guardar</button>
+              <button @click="startEditing(message.messageID, message.message)" v-if="editingMessageID !== message.messageID" class="bg-primary">Modify</button>
+              <button @click="saveMessage(message.messageID)" v-else class="bg-primary">Save</button>
             </div>
           </div>
         </div>

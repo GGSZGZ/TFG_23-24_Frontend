@@ -11,7 +11,7 @@ export const useApiStore = defineStore('flashgaminghub', {
   actions: {
     async fetchPostLoginUser(user: any) {
       try {
-        const response = await fetch('https://localhost:7025/Auth/Login', {
+        const response = await fetch('http://localhost:8001/Auth/Login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -35,7 +35,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     },
     async fetchPostRegisterUser(user: any,admin=false) {
       try {
-        const response = await fetch('https://localhost:7025/Auth/Register', {
+        const response = await fetch('http://localhost:8001/Auth/Register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -68,7 +68,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return;
         }
     
-        const response = await fetch('https://localhost:7025/User', {
+        const response = await fetch('http://localhost:8001/User', {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -99,7 +99,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/User/${id}`, {
+        const response = await fetch(`http://localhost:8001/User/${id}`, {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -121,7 +121,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/User/${id}/messages`, {
+        const response = await fetch(`http://localhost:8001/User/${id}/messages`, {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -146,7 +146,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/User/${id}`, {
+        const response = await fetch(`http://localhost:8001/User/${id}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${this.token}`
@@ -173,7 +173,7 @@ export const useApiStore = defineStore('flashgaminghub', {
         Object.keys(userData).forEach(key => {
           formattedUserData[key] = userData[key];
         });
-        const response = await fetch(`https://localhost:7025/User/${id}`, {
+        const response = await fetch(`http://localhost:8001/User/${id}`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${tokenUpdated}`,
@@ -205,7 +205,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     async fetchStudios(name?: string, country?: string) {
       try {
     
-        let url = 'https://localhost:7025/Studio';
+        let url = 'http://localhost:8001/Studio';
         if (name !== undefined) {
           url += `?name=${name}`;
         } else if (country !== undefined) {
@@ -233,7 +233,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     },
     async fetchStudio(id: number) {
       try {
-        const response = await fetch(`https://localhost:7025/Studio/${id}`);
+        const response = await fetch(`http://localhost:8001/Studio/${id}`);
         if (!response.ok) {
           throw new Error('Error al obtener los datos')
         }
@@ -247,7 +247,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     },
     async fetchGamesStudio(id: number) {
       try {
-        const response = await fetch(`https://localhost:7025/Studio/${id}/games`);
+        const response = await fetch(`http://localhost:8001/Studio/${id}/games`);
         if (!response.ok) {
           throw new Error('Error al obtener los datos')
         }
@@ -260,7 +260,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     async fetchPostStudio(studioData:any) {
       try {
         
-        const url = 'https://localhost:7025/Studio';
+        const url = 'http://localhost:8001/Studio';
     
         const response = await fetch(url, {
           method: 'POST',
@@ -290,7 +290,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/Studio/${id}`, {
+        const response = await fetch(`http://localhost:8001/Studio/${id}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${this.token}`
@@ -313,7 +313,7 @@ export const useApiStore = defineStore('flashgaminghub', {
         Object.keys(studioData).forEach(key => {
           formattedStudioData[key] = studioData[key];
         });
-        const response = await fetch(`https://localhost:7025/Studio/${id}`, {
+        const response = await fetch(`http://localhost:8001/Studio/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -347,7 +347,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/ShoppingCart/${id}`, {
+        const response = await fetch(`http://localhost:8001/ShoppingCart/${id}`, {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -365,7 +365,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     async fetchPostShoppingCart(shoppingCartData:any) {
       try {
         
-        const url = 'https://localhost:7025/ShoppingCart';
+        const url = 'http://localhost:8001/ShoppingCart';
     
         const response = await fetch(url, {
           method: 'POST',
@@ -401,7 +401,7 @@ export const useApiStore = defineStore('flashgaminghub', {
         Object.keys(shoppingCartData).forEach(key => {
           formattedStudioData[key] = shoppingCartData[key];
         });
-        const response = await fetch(`https://localhost:7025/ShoppingCart/${id}`, {
+        const response = await fetch(`http://localhost:8001/ShoppingCart/${id}`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${this.token}`,
@@ -434,7 +434,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/ShoppingCart/${id}`, {
+        const response = await fetch(`http://localhost:8001/ShoppingCart/${id}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${this.token}`
@@ -455,7 +455,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           console.error('No se encontró ningún token JWT en el localStorage');
           return;
         }
-        const response = await fetch(`https://localhost:7025/ShoppingCart/${ShoppingCartID}/games/${gameId}`, {
+        const response = await fetch(`http://localhost:8001/ShoppingCart/${ShoppingCartID}/games/${gameId}`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${this.token}`
@@ -477,7 +477,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return;
         }
     
-        const response = await fetch(`https://localhost:7025/ShoppingCart/${ShoppingCartID}/games/${gameId}`, {
+        const response = await fetch(`http://localhost:8001/ShoppingCart/${ShoppingCartID}/games/${gameId}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${this.token}`
@@ -501,7 +501,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return;
         }
     
-        const response = await fetch(`https://localhost:7025/ShoppingCart/${id}/games`, {
+        const response = await fetch(`http://localhost:8001/ShoppingCart/${id}/games`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${this.token}`
@@ -528,7 +528,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           console.error('No se encontró ningún token JWT en el localStorage');
           return;
         }
-        const response = await fetch('https://localhost:7025/LibraryGameUser', {
+        const response = await fetch('http://localhost:8001/LibraryGameUser', {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -559,7 +559,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/LibraryGameUser/${id}`, {
+        const response = await fetch(`http://localhost:8001/LibraryGameUser/${id}`, {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -581,7 +581,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/LibraryGameUser/${id}/games`, {
+        const response = await fetch(`http://localhost:8001/LibraryGameUser/${id}/games`, {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -597,7 +597,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     async fetchPostLibraryGameUser(libraryGameUserData:any) {
       try {
         
-        const url = 'https://localhost:7025/LibraryGameUser';
+        const url = 'http://localhost:8001/LibraryGameUser';
     
         const response = await fetch(url, {
           method: 'POST',
@@ -632,7 +632,7 @@ export const useApiStore = defineStore('flashgaminghub', {
         Object.keys(libraryGameUserData).forEach(key => {
           formattedLibraryGameUserData[key] = libraryGameUserData[key];
         });
-        const response = await fetch(`https://localhost:7025/LibraryGameUser/${id}`, {
+        const response = await fetch(`http://localhost:8001/LibraryGameUser/${id}`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${this.token}`,
@@ -665,7 +665,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/LibraryGameUser/${id}`, {
+        const response = await fetch(`http://localhost:8001/LibraryGameUser/${id}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${this.token}`
@@ -686,7 +686,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           console.error('No se encontró ningún token JWT en el localStorage');
           return;
         }
-        const response = await fetch(`https://localhost:7025/LibraryGameUser/${LibraryGameUserID}/games/${gameId}`, {
+        const response = await fetch(`http://localhost:8001/LibraryGameUser/${LibraryGameUserID}/games/${gameId}`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${this.token}`
@@ -709,7 +709,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           console.error('No se encontró ningún token JWT en el localStorage');
           return;
         }
-        const response = await fetch('https://localhost:7025/GameShop', {
+        const response = await fetch('http://localhost:8001/GameShop', {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -740,7 +740,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/GameShop/${id}`, {
+        const response = await fetch(`http://localhost:8001/GameShop/${id}`, {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -756,7 +756,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     },
     async fetchGamesGameShop(id: number, category?: string, price?: number, orderDate?: string, orderPrice?: string, orderName?: string) {
       try {
-        let url = `https://localhost:7025/GameShop/${id}/games`;
+        let url = `http://localhost:8001/GameShop/${id}/games`;
         const params = new URLSearchParams();
     
         if (category !== undefined) {
@@ -797,7 +797,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return;
         }
         
-        const url = 'https://localhost:7025/GameShop';
+        const url = 'http://localhost:8001/GameShop';
     
         const response = await fetch(url, {
           method: 'POST',
@@ -827,7 +827,7 @@ export const useApiStore = defineStore('flashgaminghub', {
         Object.keys(gameShopData).forEach(key => {
           formattedGameShopData[key] = gameShopData[key];
         });
-        const response = await fetch(`https://localhost:7025/GameShop/${id}`, {
+        const response = await fetch(`http://localhost:8001/GameShop/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -859,7 +859,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/GameShop/${id}`, {
+        const response = await fetch(`http://localhost:8001/GameShop/${id}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${this.token}`
@@ -878,7 +878,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     //GAME
     async fetchGames() {
       try {
-        const response = await fetch('https://localhost:7025/Game');
+        const response = await fetch('http://localhost:8001/Game');
     
         if (!response.ok) {
           throw new Error('Error al obtener los datos');
@@ -899,7 +899,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     },
     async fetchGame(id: number) {
       try {
-        const response = await fetch(`https://localhost:7025/Game/${id}`);
+        const response = await fetch(`http://localhost:8001/Game/${id}`);
         if (!response.ok) {
           throw new Error('Error al obtener los datos')
         }
@@ -913,7 +913,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     },
     async fetchPostGame(gameData:any) {
       try {
-        const url = 'https://localhost:7025/Game';
+        const url = 'http://localhost:8001/Game';
     
         const response = await fetch(url, {
           method: 'POST',
@@ -943,7 +943,7 @@ export const useApiStore = defineStore('flashgaminghub', {
         Object.keys(gameData).forEach(key => {
           formattedGameData[key] = gameData[key];
         });
-        const response = await fetch(`https://localhost:7025/Game/${id}`, {
+        const response = await fetch(`http://localhost:8001/Game/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -970,7 +970,7 @@ export const useApiStore = defineStore('flashgaminghub', {
     async fetchDeleteGame(id: number) {
       try {
 
-        const response = await fetch(`https://localhost:7025/Game/${id}`, {
+        const response = await fetch(`http://localhost:8001/Game/${id}`, {
           method: 'DELETE'
         })
         if (!response.ok) {
@@ -990,7 +990,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           console.error('No se encontró ningún token JWT en el localStorage');
           return;
         }
-        const response = await fetch('https://localhost:7025/Community', {
+        const response = await fetch('http://localhost:8001/Community', {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -1021,7 +1021,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/Community/${id}`, {
+        const response = await fetch(`http://localhost:8001/Community/${id}`, {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
@@ -1042,7 +1042,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return;
         }
         
-        const url = 'https://localhost:7025/Community';
+        const url = 'http://localhost:8001/Community';
     
         const response = await fetch(url, {
           method: 'POST',
@@ -1077,7 +1077,7 @@ export const useApiStore = defineStore('flashgaminghub', {
         Object.keys(communityData).forEach(key => {
           formattedCommunityData[key] = communityData[key];
         });
-        const response = await fetch(`https://localhost:7025/Community/${id}`, {
+        const response = await fetch(`http://localhost:8001/Community/${id}`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${this.token}`,
@@ -1110,7 +1110,7 @@ export const useApiStore = defineStore('flashgaminghub', {
           return
         }
 
-        const response = await fetch(`https://localhost:7025/Community/${id}`, {
+        const response = await fetch(`http://localhost:8001/Community/${id}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${this.token}`

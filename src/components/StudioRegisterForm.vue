@@ -42,7 +42,7 @@ const fetchPostUser = async (values: any) => {
       
       const studioJSON = JSON.stringify(newStudio);
       localStorage.setItem('studioLogged', studioJSON);
-      alert('El estudio se ha logeado correctamente');
+      alert('Studio registered correctly');
       handleClear();
     }
   } catch (err) {
@@ -141,8 +141,8 @@ const navigateToHome = async() => {
           :error-messages="passwd.errorMessage.value"
           :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
           :type="visible ? 'text' : 'password'"
-          label="Contraseña"
-          placeholder="Pon tu contraseña"
+          label="Password"
+          placeholder="Introduce your password"
           @click:append-inner="visible = !visible"
         ></v-text-field>
 
@@ -150,7 +150,7 @@ const navigateToHome = async() => {
           v-model="checkbox.value.value"
           :error-messages="checkbox.errorMessage.value"
           value="1"
-          label="Acepto los Términos de Política y Privacidad"
+          label="Accept the Terms of Policy and Privacy"
           type="checkbox"
         >
         </v-checkbox>

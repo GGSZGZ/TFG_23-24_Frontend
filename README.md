@@ -19,3 +19,10 @@ npm run dev
 # To run dockerfile use the following command
 
 docker build -t (user)/(nameimage):(tagname) .
+docker run -d -p 8080:80 ggszgz/frontend:latest
+
+# Change fetch urls on store before build in docker
+# Local
+https://localhost:(backendport/swaggerport)/example
+# Docker
+http://localhost:(8001:or backendport/swaggerport in docker)/example

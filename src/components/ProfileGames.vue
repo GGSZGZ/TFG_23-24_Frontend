@@ -61,7 +61,7 @@ const handleClick = (item: any) => {
       </div>
     </div>
     <div v-else>
-      <p>No hay juegos disponibles.</p>
+      <p class="no-games">No games available.</p>
     </div>
   </v-container>
 </template>
@@ -175,5 +175,8 @@ const handleClick = (item: any) => {
   padding: 0px 5px;
   box-shadow: 3px 3px 4px 0 var(--color-blue);
   white-space: nowrap;
+}
+.no-games{
+  margin-left: 10%;
 }
 </style>
