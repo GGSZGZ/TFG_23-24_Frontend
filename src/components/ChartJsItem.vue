@@ -1,6 +1,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
   import Chart from 'chart.js/auto';
+  import { useApiStore, pinia } from '../store/api';
   
   export default defineComponent({
     name: 'SalesMetrics',
@@ -16,13 +17,15 @@
       };
     },
     methods: {
-        renderChart() {
+  async renderChart() {
   const ctx = (document.getElementById('monthlySalesChart') as HTMLCanvasElement).getContext('2d');
   if (!ctx) return;
 
   const labels = Object.keys(this.monthlySales);
   const data = Object.values(this.monthlySales);
-  const totalSales = parseInt(localStorage.getItem('totalSales') || '0', 10);
+  let gameShop = await useApiStore(pinia).fetchGameShop(1);
+  const totalSales = gameShop.annualSales
+  
   
   // Obtener la fecha actual en formato YYYY-MM
   const currentDate = new Date();

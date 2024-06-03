@@ -98,20 +98,19 @@ async function saveUserGames() {
 
 let currentDate = new Date().toISOString();
 
-let annualSalesIncremented = gameShop.annualSales + 1;
 const shoppingCartChartjs = await useApiStore(pinia).fetchShoppingCart(decodedToken.id);
 let totalGamesInCart = 0;
 for (const item of shoppingCartChartjs.games) {
-  totalGamesInCart += item.quantity;
+  totalGamesInCart += 1;
 }
-
-let chartSales = parseInt(localStorage.getItem('totalSales') || '0', 10) + totalGamesInCart;
-localStorage.setItem('totalSales', chartSales.toString());
+let annualSalesIncremented = gameShop.annualSales + totalGamesInCart;
 
 let gameShopDTO = {
   annualSales: annualSalesIncremented,
   lastUpdated: currentDate
 };
+
+
 
 // Actualizamos el GameShop con los nuevos valores
 await useApiStore(pinia).fetchUpdateGameShop(1, gameShopDTO);
