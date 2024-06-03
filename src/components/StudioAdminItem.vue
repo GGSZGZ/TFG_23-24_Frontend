@@ -40,6 +40,7 @@ async function addGame() {
   if (nuevoJuego.value.discount !== undefined && nuevoJuego.value.discount !== null && nuevoJuego.value.discount !== '') {
     discount = parseFloat(nuevoJuego.value.discount);
   }
+  if (nuevoJuego.value.images.length == 5) {
 
   if (!name || !description || !synopsis || !price || !categories) {
     alert('Faltan campos por completar');
@@ -60,15 +61,17 @@ async function addGame() {
         storeID: '1'
       };
 
-      const addedGame = await useApiStore(pinia).fetchPostGame(gameData);
+      await useApiStore(pinia).fetchPostGame(gameData);
+      const games= await useApiStore(pinia).fetchGamesStudio(studioObject.studioID,);
+      
 
-      if (nuevoJuego.value.images.length > 0) {
-        await uploadImages(addedGame.gameID, studioObject.studioID);
+        await uploadImages(games[games.length-1].gameID, studioObject.studioID);
+        cleanFields();
       }
-
-      cleanFields();
-    }
   }
+}else{
+        alert('Need to select at least 5 images.')
+      }
 }
 
 async function uploadImages(gameID: number, studioID: number) {
@@ -77,7 +80,7 @@ async function uploadImages(gameID: number, studioID: number) {
     const jpgImage = await convertImageToJPG(image);
     const renamedFile = new File([jpgImage], `img${i + 1}.jpg`, { type: 'image/jpeg' });
     //no static keys or user account with permissions 
-    // await s3Service.uploadImage(`Studio${studioID}/Game${gameID}`, renamedFile);
+    await s3Service.uploadImage(`Studio${studioID}/Game${gameID}`, renamedFile);
   }
 }
 
