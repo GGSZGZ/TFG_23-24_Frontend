@@ -25,7 +25,6 @@
   const data = Object.values(this.monthlySales);
   let gameShop = await useApiStore(pinia).fetchGameShop(1);
   const totalSales = gameShop.annualSales
-  console.log(totalSales);
   
   
   // Obtener la fecha actual en formato YYYY-MM
