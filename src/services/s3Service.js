@@ -65,7 +65,37 @@ export default {
         console.error('Error al subir la imagen:', error);
         throw error;
     }
+},
+  async createStudioFolder(studioID) {
+    const folderPath = `Studio${studioID}`;
+
+    try {
+        // Verificar si la carpeta del estudio ya existe
+        const folderExistsResponse = await fetch(`https://tfgisggs.s3.amazonaws.com/${folderPath}`, {
+            method: 'HEAD'
+        });
+
+        if (!folderExistsResponse.ok) {
+            // La carpeta del estudio no existe, intenta crearla
+            const createFolderResponse = await fetch(`https://tfgisggs.s3.amazonaws.com/${folderPath}`, {
+                method: 'PUT',
+                headers: {
+                    'x-amz-acl': 'public-read'
+                }
+            });
+
+            if (!createFolderResponse.ok) {
+                throw new Error(`Error al crear la carpeta del estudio: ${createFolderResponse.statusText}`);
+            }
+        } else {
+            console.log(`La carpeta del estudio ${folderPath} ya existe.`);
+        }
+    } catch (error) {
+        console.error('Error al crear la carpeta del estudio:', error);
+        throw error;
+    }
 }
+
 };
 
 
