@@ -272,6 +272,7 @@ button:hover {
 }
 .custom-form {
   width: 100%;
+  color: var(--neutral-colors-white);
 }
 .v-row {
   flex-wrap: wrap;

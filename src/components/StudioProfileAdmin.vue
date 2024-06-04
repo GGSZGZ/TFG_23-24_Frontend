@@ -90,7 +90,7 @@ const logOut = () =>{
 
 <template>
     <div class="card" v-if="studioData">
-        <img :src="studioImageUrl" alt="Descripción de la imagen" class="card-image">
+        <img src="/src/assets/StudioImage.png" alt="Descripción de la imagen" class="card-image">
         <div class="card-content">
             <div class="card-column">
                 <div class="card-username">
@@ -271,6 +271,31 @@ const logOut = () =>{
   
   .editable-input:focus {
       outline: none;
+  }
+  @media (max-width: 750px){
+    .card{
+        display: block;
+        width: 90%;
+        left: 20px;
+        height: auto;
+        background: linear-gradient(to bottom, var(--color-black), var(--color-dark-blue), var(--color-blue));
+    }
+    .card-image{
+        width: 90%;
+        height: auto;
+        margin-left: 20px;
+    }
+    .card-content{
+        margin-top: 10px;
+        display: block;
+        margin-bottom: 60px;
+    }
+    .card-column{
+        margin-left: 10px;
+    }
+    .card-column:nth-child(2){
+        margin-left: 10px;
+    }
   }
   </style>
   

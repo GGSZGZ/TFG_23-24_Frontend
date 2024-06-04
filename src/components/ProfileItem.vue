@@ -94,7 +94,7 @@ const logOut = () =>{
 
 <template>
   <div class="card" v-if="userData">
-    <img src="/src/assets/profile.jpg" alt="Descripción de la imagen" class="card-image">
+    <img src="/src/assets/ProfileImage.png" alt="Descripción de la imagen" class="card-image">
     <div class="card-content">
       <div class="card-column">
         <div class="card-username">

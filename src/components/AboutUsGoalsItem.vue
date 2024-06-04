@@ -50,8 +50,8 @@ onMounted(() => {
     </v-row>
     <v-row class="mt-4">
       <v-col cols="12" md="4">
-        <v-card class="pa-4 d-flex align-center justify-center black white--text custom-card" height="100%">
-          <span>{{ aboutUs.sections.length > 2 ? aboutUs.sections[2].content : '' }}</span>
+        <v-card class="pa-4 d-flex align-center justify-center black white--text custom-card custom-logo-card">
+          <img v-if="aboutUs.sections.length > 2 && aboutUs.sections[2].type === 'image'" :src="aboutUs.sections[2].content" class="responsive-logo">
         </v-card>
       </v-col>
       <v-col cols="12" md="8">
@@ -68,21 +68,30 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 .responsive-image {
   max-width: 100%;
   height: auto;
- 
 }
-.custom-image-card{
+.responsive-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.custom-image-card {
   padding: 0% !important;
 }
+.custom-logo-card {
+  padding: 0% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
- span{
-    color: var(--neutral-colors-white);
-    font-family: var(--font-archivo-black);
-    font-size: var(--font-size-25xl);
-  }
+span {
+  color: var(--neutral-colors-white);
+  font-family: var(--font-archivo-black);
+  font-size: var(--font-size-25xl);
+}
 .pa-4 {
   background-color: var(--color-dark-blue);
   margin-top: 50px;
