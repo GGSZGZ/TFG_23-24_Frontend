@@ -358,6 +358,15 @@ document.addEventListener('DOMContentLoaded', () => {
         </RouterLink>
       </slot>
     </h3>
+    <slot name="cart">
+      <RouterLink
+        v-if="isUserLoggedIn"
+        to="/cart"
+        style="text-decoration: none; color: var(--neutral-colors-headings-black);"
+      >
+        <img src="/src/assets/shop-cart.png" alt="" width="100px">
+      </RouterLink>
+    </slot>
   </nav>
   <slot name="hrindex">
     <hr class="header-line-hr" />
@@ -396,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
   transform: scale(0.7);
   right: 10px;
   position: absolute;
-  top: 46px;
+  top: 2px;
   display: flex;
   flex-direction: row;
   align-items: center;

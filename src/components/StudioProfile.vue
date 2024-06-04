@@ -25,7 +25,7 @@ const studioID = Number(router.currentRoute.value.params.id);
 
 <template>
     <div class="card" v-if="studioData">
-        <img :src="studioImageUrl" alt="Studio Image" class="card-image">
+        <img src="/src/assets/ProfileImage.png" alt="Studio Image" class="card-image">
         <div class="card-content">
             <div class="card-column">
                 <div class="card-username">

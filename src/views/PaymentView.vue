@@ -34,7 +34,19 @@ import MethodsItem from '@/components/MethodsItem.vue'
 .payment{
     flex: 2;
 }
-.method{
+.methods{
     flex: 1;
+}
+@media (max-width: 750px){
+  .bar{
+    width: 90%;
+  }
+  .payment-content{
+    display: block;
+  }
+  .methods{
+    margin-top: 10px;
+    margin-left: 5px;
+  }
 }
 </style>

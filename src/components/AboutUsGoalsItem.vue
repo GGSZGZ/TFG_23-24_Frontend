@@ -50,7 +50,7 @@ onMounted(() => {
     </v-row>
     <v-row class="mt-4">
       <v-col cols="12" md="4">
-        <v-card class="pa-4 d-flex align-center justify-center black white--text custom-card custom-logo-card">
+        <v-card class="pa-4 d-flex align-center justify-center black white--text custom-logo-card">
           <img v-if="aboutUs.sections.length > 2 && aboutUs.sections[2].type === 'image'" :src="aboutUs.sections[2].content" class="responsive-logo">
         </v-card>
       </v-col>
@@ -73,9 +73,10 @@ onMounted(() => {
   height: auto;
 }
 .responsive-logo {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
   object-fit: cover;
+  border: 2px solid var(--color-black);
 }
 .custom-image-card {
   padding: 0% !important;
