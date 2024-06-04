@@ -127,6 +127,25 @@ const studioID = Number(router.currentRoute.value.params.id);
   .editable-input:focus {
       outline: none;
   }
+  @media (max-width:750px){
+
+    .card{
+        display: block;
+        height: auto;
+        width: 90%;
+        left:20px;
+        background: linear-gradient(to bottom, var(--color-black), var(--color-dark-blue), var(--color-blue));
+    }
+    .card-content{
+        display: block;
+    }
+    .card-column{
+        margin-left: 0px;
+    }
+    .card-column:nth-child(2){
+        margin-left: 0px;
+    }
+  }
   </style>
   
   

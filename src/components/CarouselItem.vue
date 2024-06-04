@@ -100,4 +100,12 @@ onMounted(fetchGames);
   margin-bottom: 10px;
   margin-left: 80%;
 }
+@media (max-width: 750px){
+  .carousel-title{
+    margin-bottom: 50%;
+  }
+  .carousel-description{
+    width: 80%;
+  }
+}
 </style>

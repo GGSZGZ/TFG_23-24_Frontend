@@ -247,4 +247,22 @@ const logOut = () =>{
 .editable-input:focus {
   outline: none;
 }
+
+@media (max-width: 750px){
+  .card{
+    display: block;
+    height: auto;
+    background: linear-gradient(to bottom, var(--color-black), var(--color-dark-blue), var(--color-blue));
+  }
+  .card-content{
+    display: block;
+    margin-bottom: 50px;
+  }
+  .card-image{
+    width: 90%;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+
+}
 </style>

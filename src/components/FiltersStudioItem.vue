@@ -47,4 +47,12 @@ watch(selectedStudio, (newStudio) => {
   height: 330px;
   overflow-y: auto;
 }
+@media (max-width: 750px){
+  .v-col-6{
+    max-width: 100%;
+  }
+  .v-row{
+    display: block;
+  }
+}
 </style>

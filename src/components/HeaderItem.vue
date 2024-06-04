@@ -36,9 +36,6 @@ const isAdminLoggedIn = computed(() => decodedToken?.role === 'admin' && !studio
 const isStudioLoggedIn = computed(() => !decodedToken && studioData.value);
 const isGuest = computed(() => !decodedToken && !studioData.value);
 
-// Imprimir información de depuración
-console.log(decodedToken?.role + ', ' + (studioData.value ? studioData.value.studioID : 'No Studio Data'));
-
 //Máscara
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById("myCanvasH") as HTMLCanvasElement;
@@ -442,9 +439,23 @@ document.addEventListener('DOMContentLoaded', () => {
 .profile:hover {
   color: var(--color-blue);
 }
-.logo{
-  
-}
+ @media (max-width: 750px){
+  .logo{
+    width: 200px;
+    left:-15px;
+  }
+  .logo-1-icon{
+    left: 0px;
+  }
+  .logo-name{
+    display: none;
+  }
 
+  .sections{
+    gap: 10px;
+    font-size: 22px;
+  }
+
+ }
 
 </style>

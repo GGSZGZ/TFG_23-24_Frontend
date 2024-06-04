@@ -172,4 +172,24 @@ const handleClick = (item: any) => {
   box-shadow: 3px 3px 4px 0 var(--color-blue);
   white-space: nowrap; /* Asegura que los elementos individuales no se envuelvan */
 }
+
+@media (max-width: 750px){
+  .card{
+    display: block;
+    width: 280px;
+    height: auto;
+    position: relative;
+    background-color: var(--color-black);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .card-image{
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-bottom: 10px;
+    width: 90%;
+    height: 200px;
+  }
+}
 </style>

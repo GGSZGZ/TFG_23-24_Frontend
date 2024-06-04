@@ -56,7 +56,7 @@ const handleClick = (item: any) => {
     <v-data-table-virtual
       :headers="headers"
       :items="filteredItems"
-      height="400"
+      height="max-content"
     >
       <template v-slot:item="{ item }">
         <tr @click="() => handleClick(item)">
@@ -76,5 +76,11 @@ const handleClick = (item: any) => {
 <style scoped>
 .v-card {
   margin-bottom: 10px;
+  background-color: var(--color-dark-blue);
+  color: var(--neutral-colors-white);
+}
+.v-table{
+  background-color: var(--color-dark-blue);
+  color: var(--neutral-colors-white);
 }
 </style>

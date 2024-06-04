@@ -52,7 +52,7 @@ async function submitComment() {
     };
     
     if (newComment.value.trim() === '') {
-      alert('Debes escribir algo si quieres comentar');
+      alert('If you want to comment, write something down');
     } else {
       const newMessage = await useApiStore(pinia).fetchPostCommunity(communityDTO);
       
@@ -72,7 +72,7 @@ async function submitComment() {
       newComment.value = '';
     }
   } else {
-    alert('Error, el usuario debe registrarse primero.');
+    alert('Error, the user must login first.');
   }
 }
 
@@ -120,14 +120,14 @@ async function likeComment(messageID: number) {
       likeDisabled[message.messageID] = false;
     }
   }else{
-    alert('Lo sentimos,no puedes darle me gusta dos veces al mismo comentario.');
+    alert('We´re sorry, you can´t press the like button twice to the same comment.')
   }
   }
 }else{
-  alert('Lo sentimos no puedes darte like a ti mismo.')
+  alert('We´re sorry, you can´t give a like to yourself.')
 }
   }else{
-    alert('Error, el usuario debe registrarse primero para dar like.');
+    alert('Error, the user must login first to like.');
   }
 }
 

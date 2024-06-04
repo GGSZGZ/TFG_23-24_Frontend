@@ -73,4 +73,11 @@ hr {
   padding: 20px;
   margin-top: -30px;
 }
+
+@media (max-width: 750px){
+  .table{
+    display: block;
+  }
+}
+
 </style>

@@ -32,6 +32,7 @@ const handleCategorySelected = (category: string | null) => {
   font-family: var(--font-archivo-black);
   margin-top: 40px;
   margin-left: 20px;
+  color: var(--neutral-colors-white);
 }
 
 .bar {
@@ -55,9 +56,15 @@ const handleCategorySelected = (category: string | null) => {
   flex: 1;
   margin-left: 20px;
   background-color: var(--color-blue);
-  margin-bottom: 10px;
+  height: fit-content;
 }
 .categories-title {
   margin-bottom: 20px;
+}
+
+@media (max-width: 750px){
+  .total-item{
+    flex:1.5;
+  }
 }
 </style>

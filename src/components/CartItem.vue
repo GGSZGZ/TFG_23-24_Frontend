@@ -127,7 +127,7 @@ const deleteAllGames = async () => {
 
 <style scoped>
 .cards-container {
-  height: 610px;
+  max-height: 610px;
   overflow-y: auto;
   scrollbar-width: none;
 }
@@ -280,5 +280,24 @@ const deleteAllGames = async () => {
 
 .deleteAll:hover {
   color: red;
+}
+
+@media (max-width: 750px){
+  .card{
+    display: block;
+    width: 400px;
+    height: auto;
+    position: relative;
+    background-color: var(--color-black);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .card-image{
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 90%;
+    height: 200px;
+  }
 }
 </style>

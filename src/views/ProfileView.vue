@@ -38,6 +38,7 @@ import Comments from '../components/ProfileComments.vue';
 
 h1 {
     margin-top: 10%;
+    color: var(--neutral-colors-white);
 }
 
 hr {
@@ -54,5 +55,14 @@ hr {
 .right-section h1 {
     margin-right: 0;
     text-align: left;
+}
+@media (max-width: 750px){
+    .container{
+        display: block;
+    }
+    .cards-container{
+        height: auto;
+        max-height: 600px;
+    }
 }
 </style>

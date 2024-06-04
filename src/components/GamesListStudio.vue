@@ -226,4 +226,27 @@ const filteredGames = computed(() => {
   padding: 0px 5px;
   box-shadow: 3px 3px 4px 0 var(--color-blue);
 }
+@media (max-width: 750px){
+  .cards-container{
+    width: 100%;
+    margin-left: 0;
+  }
+  .card{
+    display: block;
+    width: 260px;
+    height: auto;
+    position: relative;
+    background-color: var(--color-black);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .card-image{
+    margin-top: 15px;
+    margin-left: 15px;
+    width: 90%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+}
 </style>

@@ -211,6 +211,39 @@ strong {
     color: var(--neutral-colors-white);
 }
 
+@media (max-width: 750px){
+  .page{
+    display: block;
+    min-height: 0;
+  }
+  .main-image {
+    width: 400px;
+    height: 400px;
+    margin-bottom: 0px;
+    margin-left: 40px;
+    object-fit: fill;
+  }
+  .thumbnail-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Crea dos columnas de igual tamaño */
+    grid-template-rows: repeat(2, 1fr); /* Crea dos filas de igual tamaño */
+    gap: 10px; /* Espacio entre las imágenes */
+    margin-top: -60px;
+    width: 400px;
+    border-radius: 100px;
+    position: relative;
+    z-index: 1;
+    margin-left: 40px;
+  }
+  .thumbnail-container img {
+    width: 100%; /* Ajusta el ancho de la imagen al tamaño de la celda */
+    height: auto; /* Mantiene la proporción de la imagen */
+    border-radius: 10px; /* Ajusta esto si quieres que las imágenes tengan bordes redondeados */
+  }
+  .side-container{
+    margin-left: 0;
+  }
+}
 </style>
 
 

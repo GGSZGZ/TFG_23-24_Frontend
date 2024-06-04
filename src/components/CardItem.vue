@@ -161,6 +161,7 @@ const navigateToGame = (id: any) => {
 .cards-container {
   height: 900px;
   overflow-y: hidden;
+  overflow-x: hidden;
   transition: overflow-y 0.2s ease;
 }
 .cards-container:hover {
@@ -332,5 +333,31 @@ const navigateToGame = (id: any) => {
   color: var(--neutral-colors-white);
   padding: 0px 5px;
   box-shadow: 3px 3px 4px 0 var(--color-blue);
+}
+
+@media (max-width: 750px){
+  .card{
+    display: block;
+    width: 250px;
+    height: auto;
+    position: relative;
+    background-color: var(--color-black);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .card-image{
+    margin-top: 12px;
+    margin-left: 12px;
+    width: 90%;
+    height: auto;
+  }
+  .cards-container{
+    overflow-y: auto;
+  }
+  
+  .discounted-price{
+    margin-bottom: 50px;
+  }
 }
 </style>
