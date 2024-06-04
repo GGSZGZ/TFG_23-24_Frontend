@@ -105,9 +105,10 @@ hr {
   display: flex;
   justify-content: left;
   gap: 15px;
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: hidden;
   padding: 20px;
+  scroll-behavior: smooth;
 }
 
 .game-container:hover {

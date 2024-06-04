@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import s3Service from '../services/s3Service';
 
 const games = ref([]);
+let shopEvent = ref('');
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -35,20 +36,23 @@ const calculateDiscountedPrice = (price: number, discount: number) => {
 
 onMounted(async () => {
   const response = await useApiStore(pinia).fetchGamesGameShop(1);
+  const shop = await useApiStore(pinia).fetchGameShop(1);
+  shopEvent = shop.event;
   games.value = await Promise.all(response.map(async (game:any) => {
     const studio = `Studio${game.studioID}`;
     const imageUrl = await s3Service.getImageUrl(studio, 'Game' + game.gameID, 1);
     return {
       ...game,
       imageUrl,
-      finalPrice: game.discount > 0 ? calculateDiscountedPrice(game.price, game.discount) : game.price
+      finalPrice: game.discount > 0 ? calculateDiscountedPrice(game.price, game.discount) : game.price,
     };
   }));
 });
+
 </script>
 
 <template>
-  <div class="titleDiscountGames">Games In Offer</div>
+  <div class="titleDiscountGames">Event: {{ shopEvent }}</div>
   <div class="centerBlock" v-if="games.length > 0">
     <div class="bloque">
       <div class="principal" @click="navigateToGame(games[0].gameID)">
@@ -162,7 +166,7 @@ onMounted(async () => {
   font-family: var(--font-orbitron);
   padding: 10px;
   width: 100%;
-  height: 100%;
+  height: 120%;
   text-align: center;
   font-size: 24px;
 }
@@ -338,5 +342,28 @@ onMounted(async () => {
   margin-left: 10%;
   position: absolute;
   margin-top: 2%;
+}
+
+@media (max-width:750px) {
+  .titleDiscountGames{
+    margin-top: 100px;
+  }
+  .centerBlock{
+    margin-top: 40px;
+  }
+  .grid{
+    display: none;
+  }
+  .principal{
+    width: 220%;
+    margin-left: -40%;
+  }
+  .title{
+    left: 20px;
+    font-size: 26px;
+  }
+  .date{
+    font-size: 18px;
+  }
 }
 </style>

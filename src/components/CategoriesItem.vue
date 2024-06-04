@@ -39,7 +39,7 @@ watch(selectedCategory, (newCategory) => {
       <v-form>
         <v-radio-group v-model="selectedCategory" color="yellow">
           <v-row>
-            <v-col v-for="(category, index) in categories" :key="index" cols="6">
+            <v-col v-for="(category, index) in categories" :key="index" cols="6" class="radio-column">
               <v-radio
                 :label="category"
                 :value="category"
@@ -88,6 +88,16 @@ watch(selectedCategory, (newCategory) => {
 
 .scrollable::-webkit-scrollbar-thumb:hover {
   background: #555; /* Color of the scrollbar thumb on hover */
+}
+@media (max-width: 750px){
+  .v-col-6{
+    flex: auto;
+    max-width: inherit;
+  }
+  .scrollable{
+    overflow-y: auto;
+  }
+
 }
   </style>
   

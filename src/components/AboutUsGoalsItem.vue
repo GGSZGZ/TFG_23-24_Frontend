@@ -87,7 +87,7 @@ onMounted(() => {
   background-color: var(--color-dark-blue);
   margin-top: 50px;
   margin-bottom: 50px;
-  width: 80%;
+  width: 100%;
 }
 
 h1.custom-title {

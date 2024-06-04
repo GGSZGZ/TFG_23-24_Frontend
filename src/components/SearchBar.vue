@@ -152,4 +152,13 @@ const handleSearchClick = (search: SearchItem) => {
     font-size: 0.9em;
     font-family: var(--font-roboto);
 }
+@media (max-width: 750px){
+    .v-text-field{
+        width: 95%;
+    }
+    .search-results{
+        width: 95%;
+        height: 120px;
+    }
+}
 </style>

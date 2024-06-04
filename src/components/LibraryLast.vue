@@ -23,11 +23,13 @@ h2 {
   margin-top: 10px;
   margin-left: 20px;
   margin-bottom: 5px;
+  color: var(--neutral-colors-white);
 }
 hr {
   width: 95%;
   margin-left: 20px;
   border-color: #000;
   margin-bottom: 10px;
+  color: var(--neutral-colors-white);
 }
 </style>

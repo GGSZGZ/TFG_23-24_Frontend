@@ -75,7 +75,6 @@ const handleClick = (item: any) => {
   height: 600px;
   overflow-y: auto;
   scrollbar-width: none;
-  margin-left: -10%;
 }
 
 
@@ -92,7 +91,6 @@ const handleClick = (item: any) => {
   width: 800px;
   height: 200px;
   position: relative;
-  left: 10%;
   background-color: var(--color-black);
   border-radius: 20px;
   overflow: hidden;
@@ -178,5 +176,29 @@ const handleClick = (item: any) => {
 }
 .no-games{
   margin-left: 10%;
+  color:var(--neutral-colors-white);
+}
+
+@media (max-width: 750px){
+  .cards-container{
+    width: 100%;
+  }
+  .card{
+    display: block;
+    width: 350px;
+    height: auto;
+    position: relative;
+    background-color: var(--color-black);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .card-image{
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 90%;
+    height: 200px;
+    margin-bottom: 10px;
+  }
 }
 </style>

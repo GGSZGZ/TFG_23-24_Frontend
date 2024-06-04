@@ -34,6 +34,7 @@ const updatePrice = (price:any) => {
   font-family: var(--font-archivo-black);
   margin-top: 40px;
   margin-left: 20px;
+  color: var(--neutral-colors-white)
 }
 
 .bar {
@@ -71,5 +72,10 @@ const updatePrice = (price:any) => {
 }
 .continue:hover{
   color: var(--color-blue);
+}
+@media (max-width: 750px){
+  .cart-content{
+    display: block;
+  }
 }
 </style>

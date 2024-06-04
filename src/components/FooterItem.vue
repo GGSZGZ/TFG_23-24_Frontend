@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <style scoped>
 .logo{
     position: relative;
-    top: 14px;
+    top: 10px;
     left: 0;
     width: 458px;
     height: 80px;
@@ -302,10 +302,10 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 .logo-1-icon {
   position: relative;
-  top: 0;
+  top: 10px;
   left: 10px;
   width: 143px;
-  height: 110px;
+  height: 90px;
   object-fit: cover;
 }
 .logo-name{
@@ -356,4 +356,13 @@ document.addEventListener('DOMContentLoaded', () => {
     background-color: #1aeae6;
 }
 
+@media (max-width: 750px){
+  .logo{
+    width: 200px;
+  }
+  .logo-name{
+    display: none;
+  }
+
+}
 </style>

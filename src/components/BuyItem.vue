@@ -22,7 +22,7 @@ const calculateDiscountedPrice = (price, discount) => {
 const addToCart =async () => {
  const user= localStorage.getItem('jwtToken');
  if(!user || user== 'null') {
-  alert('Debes iniciar sesión como usuario para comprar un juego.')
+  alert('You need to login to buy a game.')
   }else{
     const decodedToken = jwtDecode(user) as { id: number };
     
@@ -117,6 +117,11 @@ const addToCart =async () => {
     border: solid 2px var(--color-black);
     margin-right: 20px;
     font-family: var(--font-roboto);
+  }
+  @media (max-width: 750px){
+    .buy-container{
+     height: auto;
+    }
   }
   </style>
   

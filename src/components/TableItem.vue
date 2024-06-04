@@ -128,7 +128,6 @@ async function deleteMessagesUser(userID: number) {
 }
 button{
   position: absolute;
-  margin-right: 63px
 }
 
 
