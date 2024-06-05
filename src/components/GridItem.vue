@@ -356,7 +356,7 @@ onMounted(async () => {
   }
   .principal{
     width: 220%;
-    margin-left: -40%;
+    margin-left: -50%;
   }
   .title{
     left: 20px;

@@ -36,6 +36,8 @@ const isAdminLoggedIn = computed(() => decodedToken?.role === 'admin' && !studio
 const isStudioLoggedIn = computed(() => !decodedToken && studioData.value);
 const isGuest = computed(() => !decodedToken && !studioData.value);
 
+const sectionsTop = computed(() => (isUserLoggedIn.value ? '2px' : '45px'));
+
 //Máscara
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById("myCanvasH") as HTMLCanvasElement;
@@ -308,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <h1 class="logo-name">FlashGamingHub</h1>
   </div>
 
-  <nav class="sections">
+  <nav class="sections" :style="{top: sectionsTop}" :class="{'user-logged-in': isUserLoggedIn}">
     <h3 class="home">
       <slot name="home"></slot>
     </h3>
@@ -364,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         to="/cart"
         style="text-decoration: none; color: var(--neutral-colors-headings-black);"
       >
-        <img src="/src/assets/shop-cart.png" alt="" width="100px">
+        <img src="/src/assets/shop-cart.png" alt="" width="100px" class="cart-image">
       </RouterLink>
     </slot>
   </nav>
@@ -405,7 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
   transform: scale(0.7);
   right: 10px;
   position: absolute;
-  top: 2px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -462,7 +463,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   .sections{
     gap: 10px;
-    font-size: 22px;
+    font-size: 20px;
+    margin-right: -20px;
+  }
+  .sections.user-logged-in{
+    margin-top: 20px;
+    margin-right: -60px;
+  }
+  .cart-image{
+    width: 50px;
   }
 
  }

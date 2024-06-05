@@ -176,20 +176,25 @@ const handleClick = (item: any) => {
 @media (max-width: 750px){
   .card{
     display: block;
-    width: 280px;
+    width: 250px;
     height: auto;
     position: relative;
     background-color: var(--color-black);
     border-radius: 20px;
     overflow: hidden;
     margin-bottom: 10px;
+    left: 0;
   }
   .card-image{
     margin-top: 15px;
     margin-left: 15px;
     margin-bottom: 10px;
     width: 90%;
-    height: 200px;
+    height: auto;
+  }
+  .v-container{
+    padding: 0;
+    padding-left: 15px;
   }
 }
 </style>

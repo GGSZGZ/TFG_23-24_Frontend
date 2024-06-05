@@ -191,4 +191,25 @@ p{
   font-family: var(--font-roboto);
   color: var(--neutral-colors-white);
 }
+
+@media (max-width: 750px){
+  h1{
+    font-size: 20px;
+    margin-left: 10px;
+    width: 80%;
+  }
+  hr{
+    width: 80%;
+    margin-left: 10px;
+  }
+  .first-container{
+    display: block;
+  }
+  .scnd-container{
+    margin-top: 150px;
+  }
+  .description-text{
+    width: 80%;
+  }
+}
 </style>

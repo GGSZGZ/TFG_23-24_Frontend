@@ -63,7 +63,7 @@ import './assets/main.css'
 
 <style scoped>
 .desktop-home{
-  min-height: 443px;
+  min-height: 100vh;
 }
 body {
   margin: 0;

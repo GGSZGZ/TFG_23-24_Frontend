@@ -32,4 +32,13 @@ hr {
   margin-bottom: 10px;
   color: var(--neutral-colors-white);
 }
+@media (max-width: 750px){
+  h2{
+    font-size: 20px;
+  }
+  hr {
+    width: 88%
+  }
+  
+}
 </style>
