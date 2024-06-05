@@ -190,6 +190,7 @@ function confirmAndPay() {
               :rules="nameRules"
               label="Name"
               required
+              class="name"
             ></v-text-field>
           </v-col>
 
@@ -208,6 +209,7 @@ function confirmAndPay() {
               :rules="locationRules"
               label="Location"
               required
+              class="location"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -238,6 +240,7 @@ function confirmAndPay() {
                 :rules="countryRules"
                 label="Country"
                 required
+                class="country"
             ></v-select>
           </v-col>
 
